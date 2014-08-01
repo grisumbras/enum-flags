@@ -16,7 +16,7 @@ public:
     using underlying_type = typename std::underlying_type<enum_type>::type;
 
     flags() : val_{0} {}
-#ifndef ENUM_CLASS_FLAGS_FORBID_IMPLICT_CONVERSION
+#ifdef ENUM_CLASS_FLAGS_FORBID_IMPLICT_CONVERSION
     explicit
 #endif
     flags(enum_type e) : val_{static_cast<underlying_type>(e)} {}
@@ -91,12 +91,6 @@ template <class E> flags<E> operator|(E e, flags<E> f) {
 }
 
 
-template <class E> flags<E> operator|(E e1, E e2) {
-    flags<E> f = e1;
-    return f |= e2;
-}
-
-
 template <class E> flags<E> operator&(flags<E> f1, flags<E> f2) {
     return f1 &= f2;
 }
@@ -112,12 +106,6 @@ template <class E> flags<E> operator&(E e, flags<E> f) {;
 }
 
 
-template <class E> flags<E> operator&(E e1, E e2) {
-    flags<E> f = e1;
-    return f &= e2;
-}
-
-
 template <class E> flags<E> operator^(flags<E> f1, flags<E> f2) {
     return f1 ^= f2;
 }
@@ -130,12 +118,6 @@ template <class E> flags<E> operator^(flags<E> f, E e) {
 
 template <class E> flags<E> operator^(E e, flags<E> f) {
     return f ^= e;
-}
-
-
-template <class E> flags<E> operator^(E e1, E e2) {
-    flags<E> f = e1;
-    return f ^= e2;
 }
 
 
