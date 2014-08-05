@@ -74,7 +74,7 @@ Name                                          |Description
 #### Various functions
 Name         |Description
 -------------|-----------
-`swap(flags)`|Swaps to `flags` values
+`swap(flags)`|Swaps two `flags` values
 
 ### Nonmember functions
 Note, all functions in this group return new `flags` value.
