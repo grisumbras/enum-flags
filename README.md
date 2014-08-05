@@ -72,6 +72,8 @@ Name                                          |Description
 `set_underlying_value(flags::underlying_type)`|Sets integer representation to new value
 
 #### Various functions
+Name         |Description
+-------------|-----------
 `swap(flags)`|Swaps to `flags` values
 
 ### Nonmember functions
