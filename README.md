@@ -35,6 +35,8 @@ underlying_type|The integer type that is used as representation of `flags`|Equiv
 ### Member functions
 
 #### Constructors and assignment operators
+Name                         |Description
+-----------------------------|-----------
 `flags()`                    |Default contructor (all flags are unset)
 `flags(flags::enum_type)`    |Sets flag denoted by the parameter
 `flags(const flags&)`        |Copy constructor
@@ -47,6 +49,8 @@ underlying_type|The integer type that is used as representation of `flags`|Equiv
 Note, all functions in this group return reference to `flags`, except for
 `operator~` which returns a new `flags` value.
 
+Name                          |Description
+------------------------------|-----------
 `operator|=(flags::enum_type)`|Bitwise OR with flag denoted by the parameter
 `operator|=(const flags&)`    |Bitwise OR with flags in the parameter
 `operator&=(flags::enum_type)`|Bitwise AND with flag denoted by the parameter`
@@ -56,10 +60,14 @@ Note, all functions in this group return reference to `flags`, except for
 `operator~()`                 |Bitwise negation
 
 #### Boolean conversions
+Name             |Description
+-----------------|-----------
 `operator bool()`|Returns `true` if any of the flags is set
 `operator!()`    |Returns `true` if none of the flags is set
 
 #### Raw access to integer representation
+Name                                          |Description
+----------------------------------------------|-----------
 `underlying_value()`                          |Returns integer representation
 `set_underlying_value(flags::underlying_type)`|Sets integer representation to new value
 
@@ -69,6 +77,8 @@ Note, all functions in this group return reference to `flags`, except for
 ### Nonmember functions
 Note, all functions in this group return new `flags` value.
 
+Name                                |Description
+------------------------------------|-----------
 `operator|(flags, flags)`           |Bitwise OR of two `flags` values
 `operator|(flags, flags::enum_type)`|Bitwise OR of a `flags` value and a flag denoted by an enum value
 `operator|(flags::enum_type, flags)`|Bitwise OR of a `flags` value and a flag denoted by an enum value
