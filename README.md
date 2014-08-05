@@ -20,6 +20,17 @@ This project brings a `flags` class template which:
   in branching or loop conditions);
 * provides access to the underlying integer through member functions.
 
+## Usage
+``` c++
+enum class MyEnum { Value1 = 1 << 0, Value2 = 1 << 1 };
+using MyEnums = flags<MyEnum>;
+
+auto mask = Value1 | Value2; // set flags Value1 and Value 2
+if (mask & Value2) { // if Value2 flag is set
+    doSomething();
+}
+```
+
 ## Description
 ``` c++
 template <class E> class flags;
