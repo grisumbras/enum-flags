@@ -162,4 +162,16 @@ typename std::enable_if<
 operator^(E e1, E e2) { return flags<E>{e1} ^= e2; }
 
 
+template <class E>
+bool operator==(const flags<E> &fl1, const flags<E> &fl2) {
+    return fl1.underlying_value() == fl2.underlying_value();
+}
+
+
+template <class E>
+bool operator!=(const flags<E> &fl1, const flags<E> &fl2) {
+    return fl1.underlying_value() != fl2.underlying_value();
+}
+
+
 #endif // ENUM_CLASS_FLAGS_HPP
