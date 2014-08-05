@@ -23,7 +23,7 @@ This project brings a `flags` class template which:
 ## Usage
 ``` c++
 enum class MyEnum { Value1 = 1 << 0, Value2 = 1 << 1 };
-using MyEnums = flags<MyEnum>;
+using MyEnums = flags<MyEnum>; // actually this line is not necessary
 
 auto mask = Value1 | Value2; // set flags Value1 and Value 2
 if (mask & Value2) { // if Value2 flag is set
@@ -90,14 +90,17 @@ Name         |Description
 ### Nonmember functions
 Note, all functions in this group return new `flags` value.
 
-Name                                                |Description
-----------------------------------------------------|-----------
-<code>operator&#124;(flags, flags)</code>           |Bitwise OR of two `flags` values
-<code>operator&#124;(flags, flags::enum_type)</code>|Bitwise OR of a `flags` value and a flag denoted by an enum value
-<code>operator&#124;(flags::enum_type, flags)</code>|Bitwise OR of a `flags` value and a flag denoted by an enum value
-`operator&(flags, flags)`                           |Bitwise AND of two `flags` values
-`operator&(flags, flags::enum_type)`                |Bitwise AND of a `flags` value and a flag denoted by an enum value
-`operator&(flags::enum_type, flags)`                |Bitwise AND of a `flags` value and a flag denoted by an enum value
-`operator^(flags, flags)`                           |Bitwise XOR of two `flags` values
-`operator^(flags, flags::enum_type)`                |Bitwise XOR of a `flags` value and a flag denoted by an enum value
-`operator^(flags::enum_type, flags)`                |Bitwise XOR of a `flags` value and a flag denoted by an enum value
+Name                                                           |Description
+---------------------------------------------------------------|-----------
+<code>operator&#124;(flags, flags)</code>                      |Bitwise OR of two `flags` values
+<code>operator&#124;(flags, flags::enum_type)</code>           |Bitwise OR of a `flags` value and a flag denoted by an enum value
+<code>operator&#124;(flags::enum_type, flags)</code>           |Bitwise OR of a `flags` value and a flag denoted by an enum value
+<code>operator&#124;(flags::enum_type, flags::enum_type)</code>|Bitwise OR of two flags denoted by enum values
+`operator&(flags, flags)`                                      |Bitwise AND of two `flags` values
+`operator&(flags, flags::enum_type)`                           |Bitwise AND of a `flags` value and a flag denoted by an enum value
+`operator&(flags::enum_type, flags)`                           |Bitwise AND of a `flags` value and a flag denoted by an enum value
+`operator&(flags::enum_type, flags::enum_type)`                |Bitwise AND of two flags denoted by enum values
+`operator^(flags, flags)`                                      |Bitwise XOR of two `flags` values
+`operator^(flags, flags::enum_type)`                           |Bitwise XOR of a `flags` value and a flag denoted by an enum value
+`operator^(flags::enum_type, flags)`                           |Bitwise XOR of a `flags` value and a flag denoted by an enum value
+`operator^(flags::enum_type, flags::enum_type)`                |Bitwise XOR of two flags denoted by enum values
