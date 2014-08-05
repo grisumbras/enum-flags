@@ -2,6 +2,7 @@
 #define ENUM_CLASS_FLAGS_HPP
 
 
+#include <initializer_list>
 #include <type_traits>
 #include <utility>
 
@@ -41,6 +42,9 @@ public:
     flags(enum_type e) : val_{static_cast<underlying_type>(e)} {}
     flags(const flags &fl) = default;
     flags(flags &&fl) = default;
+    flags(const std::initializer_list<enum_type> il) : val_{0} {
+        for (auto e: il) { val_ |= static_cast<underlying_type>(e); }
+    }
 
     flags &operator=(enum_type e) {
         val_ = static_cast<underlying_type>(e);
