@@ -36,7 +36,7 @@ if (mask & Value2) { // if Value2 flag is set
 ``` c++
 template <class E> class flags;
 ```
-where `E` is an enum.
+where `E` is an enum class.
 
 ### Member types
 Member type    |Definition                                                |Notes
