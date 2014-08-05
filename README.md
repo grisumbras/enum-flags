@@ -41,7 +41,7 @@ where `E` is an enum.
 ### Member types
 Member type    |Definition                                                |Notes
 ---------------|----------------------------------------------------------|---------------------------------------------
-enum_type      |The first template parameter (E)                          |
+enum_type      |The template parameter (E)                                |
 underlying_type|The integer type that is used as representation of `flags`|Equivalent of `std::underlying_type<E>::type`
 
 ### Member functions
@@ -58,8 +58,8 @@ Name                         |Description
 `operator=(flags&&)`         |Move assignment
 
 #### Bitwise operators
-Note, all functions in this group return reference to `flags`, except for
-`operator~` which returns a new `flags` value.
+All functions in this group return reference to `flags`, except for `operator~`
+which returns a new `flags` value.
 
 Name                                          |Description
 ----------------------------------------------|-----------
@@ -91,8 +91,7 @@ Name         |Description
 ### Nonmember functions
 
 #### Bitwise operators
-
-Note, all functions in this group return new `flags` value.
+All functions in this group return new `flags` value.
 
 Name                                                           |Description
 ---------------------------------------------------------------|-----------
@@ -110,7 +109,7 @@ Name                                                           |Description
 `operator^(flags::enum_type, flags::enum_type)`                |Bitwise XOR of two flags denoted by enum values
 
 #### Comparison operators
-Note, all functions in this group return `bool`.
+All functions in this group return `bool`.
 
 Name                      |Description
 --------------------------|-----------
