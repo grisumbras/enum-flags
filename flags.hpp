@@ -36,15 +36,15 @@ public:
     explicit operator bool() const { return val_; }
     bool operator!() const { return !val_; }
 
-    flags &operator|=(flags &fl) {
+    flags &operator|=(const flags &fl) {
         val_ |= fl.val_;
         return *this;
     }
-    flags &operator&=(flags &fl) {
+    flags &operator&=(const flags &fl) {
         val_ &= fl.val_;
         return *this;
     }
-    flags &operator^=(flags &fl) {
+    flags &operator^=(const flags &fl) {
         val_ ^= fl.val_;
         return *this;
     }
