@@ -89,6 +89,9 @@ Name         |Description
 `swap(flags)`|Swaps two `flags` values
 
 ### Nonmember functions
+
+#### Bitwise operators
+
 Note, all functions in this group return new `flags` value.
 
 Name                                                           |Description
@@ -105,3 +108,11 @@ Name                                                           |Description
 `operator^(flags, flags::enum_type)`                           |Bitwise XOR of a `flags` value and a flag denoted by an enum value
 `operator^(flags::enum_type, flags)`                           |Bitwise XOR of a `flags` value and a flag denoted by an enum value
 `operator^(flags::enum_type, flags::enum_type)`                |Bitwise XOR of two flags denoted by enum values
+
+#### Comparison operators
+Note, all functions in this group return `bool`.
+
+Name                      |Description
+--------------------------|-----------
+`operator==(flags, flags)`|Compares if two `flags` values are equal
+`operator!=(flags, flags)`|Compares if two `flags` values are not equal
