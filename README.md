@@ -18,7 +18,8 @@ This project brings a `flags` class template which:
   reasonable for flags);
 * explicitly converts to bool (which allows to use it in boolean contexts, like
   in branching or loop conditions);
-* provides access to the underlying integer through member functions.
+* provides access to the underlying integer through member functions;
+* instantiates only for enum classes.
 
 ## Usage
 ``` c++
