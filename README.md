@@ -49,15 +49,15 @@ Name                         |Description
 Note, all functions in this group return reference to `flags`, except for
 `operator~` which returns a new `flags` value.
 
-Name                          |Description
-------------------------------|-----------
-`operator|=(flags::enum_type)`|Bitwise OR with flag denoted by the parameter
-`operator|=(const flags&)`    |Bitwise OR with flags in the parameter
-`operator&=(flags::enum_type)`|Bitwise AND with flag denoted by the parameter`
-`operator&=(const flags&)`    |Bitwise AND with flags in the parameter
-`operator^=(flags::enum_type)`|Bitwise XOR with flag denoted by the parameter
-`operator^=(const flags&)`    |Bitwise XOR with flags in the parameter
-`operator~()`                 |Bitwise negation
+Name                                          |Description
+----------------------------------------------|-----------
+<code>operator&#124;=(flags::enum_type)</code>|Bitwise OR with flag denoted by the parameter
+<code>operator&#124;=(const flags&)</code>    |Bitwise OR with flags in the parameter
+`operator&=(flags::enum_type)`                |Bitwise AND with flag denoted by the parameter`
+`operator&=(const flags&)`                    |Bitwise AND with flags in the parameter
+`operator^=(flags::enum_type)`                |Bitwise XOR with flag denoted by the parameter
+`operator^=(const flags&)`                    |Bitwise XOR with flags in the parameter
+`operator~()`                                 |Bitwise negation
 
 #### Boolean conversions
 Name             |Description
@@ -77,14 +77,14 @@ Name                                          |Description
 ### Nonmember functions
 Note, all functions in this group return new `flags` value.
 
-Name                                |Description
-------------------------------------|-----------
-`operator|(flags, flags)`           |Bitwise OR of two `flags` values
-`operator|(flags, flags::enum_type)`|Bitwise OR of a `flags` value and a flag denoted by an enum value
-`operator|(flags::enum_type, flags)`|Bitwise OR of a `flags` value and a flag denoted by an enum value
-`operator&(flags, flags)`           |Bitwise AND of two `flags` values
-`operator&(flags, flags::enum_type)`|Bitwise AND of a `flags` value and a flag denoted by an enum value
-`operator&(flags::enum_type, flags)`|Bitwise AND of a `flags` value and a flag denoted by an enum value
-`operator^(flags, flags)`           |Bitwise XOR of two `flags` values
-`operator^(flags, flags::enum_type)`|Bitwise XOR of a `flags` value and a flag denoted by an enum value
-`operator^(flags::enum_type, flags)`|Bitwise XOR of a `flags` value and a flag denoted by an enum value
+Name                                                |Description
+----------------------------------------------------|-----------
+<code>operator&#124;(flags, flags)</code>           |Bitwise OR of two `flags` values
+<code>operator&#124;(flags, flags::enum_type)</code>|Bitwise OR of a `flags` value and a flag denoted by an enum value
+<code>operator&#124;(flags::enum_type, flags)</code>|Bitwise OR of a `flags` value and a flag denoted by an enum value
+`operator&(flags, flags)`                           |Bitwise AND of two `flags` values
+`operator&(flags, flags::enum_type)`                |Bitwise AND of a `flags` value and a flag denoted by an enum value
+`operator&(flags::enum_type, flags)`                |Bitwise AND of a `flags` value and a flag denoted by an enum value
+`operator^(flags, flags)`                           |Bitwise XOR of two `flags` values
+`operator^(flags, flags::enum_type)`                |Bitwise XOR of a `flags` value and a flag denoted by an enum value
+`operator^(flags::enum_type, flags)`                |Bitwise XOR of a `flags` value and a flag denoted by an enum value
