@@ -45,7 +45,10 @@ public:
     flags(const std::initializer_list<enum_type> il) : val_{0} {
         for (auto e: il) { val_ |= static_cast<underlying_type>(e); }
     }
-    template <class... Args> flags(Args... args) : flags{args...} {}
+    template <class... Args>
+    flags(enum_type e, Args... args) : flags{args...} {
+        val_ |= static_cast<underlying_type>(e);
+    }
 
     flags &operator=(enum_type e) {
         val_ = static_cast<underlying_type>(e);
@@ -94,7 +97,7 @@ public:
     void set_underlying_value(underlying_type newval) { val_ = newval; }
 
 private:
-    constexpr flags(underlying_type val) : val_{val} {}
+    constexpr explicit flags(underlying_type val) : val_{val} {}
 
     underlying_type val_;
 };
