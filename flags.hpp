@@ -4,6 +4,7 @@
 
 #include <initializer_list>
 #include <iterator>
+#include <numeric>
 #include <type_traits>
 #include <utility>
 
@@ -181,6 +182,10 @@ public:
     }
 
     bool empty() const noexcept { return !val_; }
+    size_type size() const noexcept {
+        return std::accumulate(begin(), end(), static_cast<size_type>(0),
+                               [](size_type acc, enum_type) { return ++acc; });
+    }
     constexpr size_type max_size() const noexcept {
         return sizeof(underlying_type) * 8;
     }
