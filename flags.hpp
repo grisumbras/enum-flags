@@ -203,8 +203,8 @@ public:
     const_iterator end() const noexcept { return {}; }
     const_iterator cend() const noexcept { return {}; }
 
-    iterator find(enum_type e) { return {*this, e}; }
-    const_iterator find(enum_type e) const { return {*this, e}; }
+    iterator find(enum_type e) noexcept { return {*this, e}; }
+    const_iterator find(enum_type e) const noexcept { return {*this, e}; }
 
 private:
     constexpr explicit flags(underlying_type val) noexcept : val_{val} {}
