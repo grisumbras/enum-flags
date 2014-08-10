@@ -73,6 +73,11 @@ private:
         if (!(mask_ & uvalue_)) { nextMask(); }
     }
 
+    FlagsEnumIterator(const flags<E> &fl, E e) noexcept
+        : uvalue_{fl.underlying_value()}
+        , mask_{static_cast<underlying_type>(
+            static_cast<underlying_type>(e) & uvalue_)} {}
+
     void nextMask() noexcept {
         do {
             mask_ <<= 1;
@@ -197,6 +202,9 @@ public:
     iterator end() noexcept { return iterator(); }
     const_iterator end() const noexcept { return const_iterator(); }
     const_iterator cend() const noexcept { return const_iterator(); }
+
+    iterator find(enum_type e) { return {*this, e}; }
+    const_iterator find(enum_type e) const { return {*this, e}; }
 
 private:
     constexpr explicit flags(underlying_type val) noexcept : val_{val} {}
