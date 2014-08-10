@@ -35,16 +35,17 @@ public:
     using enum_type = E;
     using underlying_type = typename std::underlying_type<enum_type>::type;
 
-    flags() : val_{0} {}
+    constexpr flags() : val_{0} {}
 #ifdef ENUM_CLASS_FLAGS_FORBID_IMPLICT_CONVERSION
     explicit
 #endif
-    flags(enum_type e) : val_{static_cast<underlying_type>(e)} {}
+    constexpr flags(enum_type e) : val_{static_cast<underlying_type>(e)} {}
     flags(const flags &fl) = default;
     flags(flags &&fl) = default;
     flags(const std::initializer_list<enum_type> il) : val_{0} {
         for (auto e: il) { val_ |= static_cast<underlying_type>(e); }
     }
+    template <class... Args> flags(Args... args) : flags{args...} {}
 
     flags &operator=(enum_type e) {
         val_ = static_cast<underlying_type>(e);
@@ -56,8 +57,8 @@ public:
     }
     flags &operator=(flags &&fl) { return *this = fl; }
 
-    explicit operator bool() const { return val_; }
-    bool operator!() const { return !val_; }
+    constexpr explicit operator bool() const { return val_; }
+    constexpr bool operator!() const { return !val_; }
 
     flags &operator|=(const flags &fl) {
         val_ |= fl.val_;
@@ -89,11 +90,11 @@ public:
 
     void swap(flags &fl) throw() { std::swap(val_, fl.val_); }
 
-    underlying_type underlying_value() const { return val_; }
+    constexpr underlying_type underlying_value() const { return val_; }
     void set_underlying_value(underlying_type newval) { val_ = newval; }
 
 private:
-    flags(underlying_type val) : val_{val} {}
+    constexpr flags(underlying_type val) : val_{val} {}
 
     underlying_type val_;
 };
