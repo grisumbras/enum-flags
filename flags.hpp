@@ -195,13 +195,13 @@ public:
         return sizeof(underlying_type) * 8;
     }
 
-    iterator begin() noexcept { return iterator(*this); }
-    const_iterator begin() const noexcept { return const_iterator(*this); }
-    const_iterator cbegin() const noexcept { return const_iterator(*this); }
+    iterator begin() noexcept { return {*this}; }
+    const_iterator begin() const noexcept { return {*this}; }
+    const_iterator cbegin() const noexcept { return {*this}; }
 
-    iterator end() noexcept { return iterator(); }
-    const_iterator end() const noexcept { return const_iterator(); }
-    const_iterator cend() const noexcept { return const_iterator(); }
+    iterator end() noexcept { return {}; }
+    const_iterator end() const noexcept { return {}; }
+    const_iterator cend() const noexcept { return {}; }
 
     iterator find(enum_type e) { return {*this, e}; }
     const_iterator find(enum_type e) const { return {*this, e}; }
