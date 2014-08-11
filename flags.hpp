@@ -206,6 +206,73 @@ public:
     iterator find(enum_type e) noexcept { return {*this, e}; }
     const_iterator find(enum_type e) const noexcept { return {*this, e}; }
 
+    size_type count(enum_type e) const noexcept {
+        return find(e) != end() ? 1 : 0;
+    }
+
+    std::pair<iterator, iterator> equal_range(enum_type e) noexcept {
+        const auto &self = *this;
+        return self.equal_range(e);
+    }
+    std::pair<const_iterator, const_iterator> equal_range(enum_type e) const noexcept {
+        auto i = find(e);
+        auto j = i;
+        return {i, ++j};
+    }
+
+    template <class... Args>
+    std::pair<iterator, bool> emplace(Args&&... args) {
+        return insert(enum_type{args...});
+    }
+    template <class... Args>
+    iterator emplace_hint (const_iterator, Args&&... args) {
+         return insert(enum_type{args...}).first;
+    }
+
+    std::pair<iterator, bool> insert(enum_type e) {
+        auto i = find(e);
+        if (i == end()) {
+            i.uvalue_ = val_ |= i.mask_ = static_cast<underlying_type>(e);
+            return {i, true};
+        }
+        return {i, false};
+    }
+    std::pair<iterator, bool> insert(const_iterator, enum_type e) {
+        return insert(e);
+    }
+    template <class InputIter>
+    void insert(InputIter i1, InputIter i2) {
+        val_ |= std::accumulate(i1, i2, static_cast<underlying_type>(0),
+                                [](underlying_type i, enum_type e)
+                                { return i | static_cast<underlying_type>(e); }
+                               );
+    }
+    void insert(const std::initializer_list<enum_type> &il) {
+        insert(il.begin(), il.end());
+    }
+
+    iterator erase(const_iterator i) {
+        i.uvalue_ = val_ &= ~i.mask_;
+        return ++i;
+    }
+    size_type erase(enum_type e) {
+        auto e_count = count(e);
+        val_ &= ~static_cast<underlying_type>(e);
+        return e_count;
+    }
+    iterator erase(const_iterator i1, const_iterator i2) {
+        iterator i;
+        i.uvalue_
+            = val_
+            &= ~std::accumulate(i1, i2, static_cast<underlying_type>(0),
+                                [](underlying_type i, enum_type e)
+                                { return i | static_cast<underlying_type>(e); }
+                               );
+        i.mask_ = i2.mask_;
+        return ++i;
+    }
+    void clear() noexcept { val_ = 0; }
+
 private:
     constexpr explicit flags(underlying_type val) noexcept : val_{val} {}
 
