@@ -130,13 +130,11 @@ public:
         : val_{static_cast<underlying_type>(e)} {}
     flags(const flags &fl) = default;
     flags(flags &&fl) = default;
-    flags(const std::initializer_list<enum_type> il) noexcept : val_{0} {
-        for (auto e: il) { val_ |= static_cast<underlying_type>(e); }
+    flags(std::initializer_list<enum_type> il) noexcept : val_{0} {
+        insert(il);
     }
     template <class... Args>
-    flags(enum_type e, Args... args)  noexcept : flags{args...} {
-        val_ |= static_cast<underlying_type>(e);
-    }
+    flags(enum_type e, Args... args) noexcept : flags{e, args...} {}
 
     flags &operator=(enum_type e) noexcept {
         val_ = static_cast<underlying_type>(e);
@@ -147,6 +145,10 @@ public:
         return *this;
     }
     flags &operator=(flags &&fl) noexcept { return *this = fl; }
+    flags &operator=(std::initializer_list<enum_type> il) noexcept {
+        val_ = 0;
+        insert(il);
+    }
 
     constexpr explicit operator bool() const noexcept { return val_; }
     constexpr bool operator!() const noexcept { return !val_; }
@@ -214,22 +216,23 @@ public:
         const auto &self = *this;
         return self.equal_range(e);
     }
-    std::pair<const_iterator, const_iterator> equal_range(enum_type e) const noexcept {
+    std::pair<const_iterator, const_iterator>
+    equal_range(enum_type e) const noexcept {
         auto i = find(e);
         auto j = i;
         return {i, ++j};
     }
 
     template <class... Args>
-    std::pair<iterator, bool> emplace(Args&&... args) {
+    std::pair<iterator, bool> emplace(Args&&... args) noexcept {
         return insert(enum_type{args...});
     }
     template <class... Args>
-    iterator emplace_hint (const_iterator, Args&&... args) {
+    iterator emplace_hint (const_iterator, Args&&... args) noexcept {
          return insert(enum_type{args...}).first;
     }
 
-    std::pair<iterator, bool> insert(enum_type e) {
+    std::pair<iterator, bool> insert(enum_type e) noexcept {
         auto i = find(e);
         if (i == end()) {
             i.uvalue_ = val_ |= i.mask_ = static_cast<underlying_type>(e);
@@ -237,30 +240,30 @@ public:
         }
         return {i, false};
     }
-    std::pair<iterator, bool> insert(const_iterator, enum_type e) {
+    std::pair<iterator, bool> insert(const_iterator, enum_type e) noexcept {
         return insert(e);
     }
     template <class InputIter>
-    void insert(InputIter i1, InputIter i2) {
+    void insert(InputIter i1, InputIter i2) noexcept {
         val_ |= std::accumulate(i1, i2, static_cast<underlying_type>(0),
                                 [](underlying_type i, enum_type e)
                                 { return i | static_cast<underlying_type>(e); }
                                );
     }
-    void insert(const std::initializer_list<enum_type> &il) {
+    void insert(const std::initializer_list<enum_type> &il) noexcept {
         insert(il.begin(), il.end());
     }
 
-    iterator erase(const_iterator i) {
+    iterator erase(const_iterator i) noexcept {
         i.uvalue_ = val_ &= ~i.mask_;
         return ++i;
     }
-    size_type erase(enum_type e) {
+    size_type erase(enum_type e) noexcept {
         auto e_count = count(e);
         val_ &= ~static_cast<underlying_type>(e);
         return e_count;
     }
-    iterator erase(const_iterator i1, const_iterator i2) {
+    iterator erase(const_iterator i1, const_iterator i2) noexcept {
         iterator i;
         i.uvalue_
             = val_
