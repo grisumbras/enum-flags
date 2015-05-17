@@ -2,91 +2,15 @@
 #define ENUM_CLASS_FLAGS_HPP
 
 
+#include "allow_flags.hpp"
+#include "iterator.hpp"
+
 #include <initializer_list>
-#include <iterator>
 #include <numeric>
-#include <type_traits>
 #include <utility>
 
 
 namespace flags {
-
-
-template <class E, class Enabler = void> struct is_flags
-: public std::false_type {};
-
-
-template <class E> struct flags;
-
-
-template <class E>
-class FlagsIterator {
-public:
-  using flags_type = flags<E>;
-  using difference_type = std::ptrdiff_t;
-  using value_type = E;
-  using pointer = value_type *;
-  using reference = const value_type;
-  using iterator_category = std::forward_iterator_tag;
-
-
-  constexpr FlagsIterator() noexcept : uvalue_(0), mask_(0) {}
-
-  constexpr FlagsIterator(const FlagsIterator &other) noexcept
-  : uvalue_(other.uvalue_), mask_(other.mask_) {}
-
-
-  FlagsIterator &operator++() noexcept {
-    nextMask();
-    return *this;
-  }
-  FlagsIterator operator++(int) noexcept {
-    auto copy = *this;
-    ++(*this);
-    return copy;
-  }
-
-
-  constexpr reference operator*() noexcept {
-    return static_cast<value_type>(mask_);
-  }
-
-
-  friend inline constexpr bool operator==(const FlagsIterator &i,
-                                          const FlagsIterator &j) noexcept {
-    return i.mask_ == j.mask_;
-  }
-
-  friend inline constexpr bool operator!=(const FlagsIterator &i,
-                                          const FlagsIterator &j) noexcept {
-    return i.mask_ != j.mask_;
-  }
-
-
-private:
-  template <class E_> friend class flags;
-
-  using impl_type = typename flags_type::impl_type;
-
-
-  explicit FlagsIterator(impl_type uv) noexcept : mask_(1), uvalue_(uv) {
-    if (!(mask_ & uvalue_)) { nextMask(); }
-  }
-
-  constexpr FlagsIterator(impl_type uv, E e) noexcept
-  : uvalue_(uv)
-  , mask_(static_cast<impl_type>(static_cast<impl_type>(e) & uv))
-  {}
-
-
-  void nextMask() noexcept {
-    do { mask_ <<= 1; } while (mask_ && !(mask_ & uvalue_));
-  }
-
-
-  impl_type uvalue_;
-  impl_type mask_;
-};
 
 
 template <class E> struct flags {
@@ -401,12 +325,6 @@ constexpr auto operator^(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
   return flags::flags<E>{e1} ^= e2;
-}
-
-
-#define ALLOW_FLAGS_FOR_ENUM(name) \
-namespace flags { \
-template <> struct is_flags< name > : std::true_type {}; \
 }
 
 
