@@ -12,7 +12,7 @@
 namespace flags {
 
 
-template <typename E, class Enabler = void> struct is_flags
+template <class E, class Enabler = void> struct is_flags
 : public std::false_type {};
 
 
@@ -109,6 +109,17 @@ public:
   using size_type = std::size_t;
   using difference_type = typename iterator::difference_type;
 
+
+  constexpr static std::size_t bit_size() { return sizeof(impl_type) * 8; }
+
+
+private:
+  template <class T, class Res = std::nullptr_t>
+  using convertible = std::enable_if<std::is_convertible<T, enum_type>::value,
+                                     Res>;
+
+
+public:
   constexpr flags() noexcept : val_(0) {}
 
   flags(const flags &fl) = default;
@@ -118,14 +129,11 @@ public:
   flags &operator=(flags &&fl) = default;
 
 
-  constexpr static std::size_t bit_size = sizeof(impl_type) * 8;
-
-
 #ifdef ENUM_CLASS_FLAGS_FORBID_IMPLICT_CONVERSION
   explicit
 #endif
   constexpr flags(enum_type e) noexcept
-  : val_{static_cast<impl_type>(e)} {}
+  : val_(static_cast<impl_type>(e)) {}
 
   flags &operator=(enum_type e) noexcept {
     val_ = static_cast<impl_type>(e);
@@ -133,38 +141,50 @@ public:
   }
 
 
-private:
-  template <typename T, typename Res = std::nullptr_t>
-  using convertible = std::enable_if<
-    std::is_convertible<T, enum_type>::value,
-    Res>;
-
-
-public:
-  flags(std::initializer_list<enum_type> il) noexcept : val_{0} { insert(il); }
+  flags(std::initializer_list<enum_type> il) noexcept : val_(0) { insert(il); }
 
   flags &operator=(std::initializer_list<enum_type> il) noexcept {
     clear();
     insert(il);
   }
 
-  template <class... Args>
-  flags(enum_type e, Args... args) noexcept : flags{e, args...} {}
+  template <class ... Args>
+  flags(enum_type e, Args ... args) noexcept : flags{e, args...} {}
+
+
+  template <class FwIter>
+  flags(FwIter b, FwIter e,
+        typename convertible<decltype(*b)>::type = nullptr)
+  noexcept(insert(std::declval<FwIter>(), std::declval<FwIter>()))
+  : val_(0)
+  { insert(b, e); }
 
 
   constexpr explicit operator bool() const noexcept { return val_; }
+
   constexpr bool operator!() const noexcept { return !val_; }
+
+  flags operator~() const noexcept { return flags(~val_); }
+
 
   flags &operator|=(const flags &fl) noexcept {
     val_ |= fl.val_;
     return *this;
   }
+
   flags &operator&=(const flags &fl) noexcept {
     val_ &= fl.val_;
     return *this;
   }
+
   flags &operator^=(const flags &fl) noexcept {
     val_ ^= fl.val_;
+    return *this;
+  }
+
+
+  flags &operator|=(enum_type e) noexcept {
+    val_ |= static_cast<impl_type>(e);
     return *this;
   }
 
@@ -172,38 +192,40 @@ public:
     val_ &= static_cast<impl_type>(e);
     return *this;
   }
-  flags &operator|=(enum_type e) noexcept {
-    val_ |= static_cast<impl_type>(e);
-    return *this;
-  }
+
   flags &operator^=(enum_type e) noexcept {
     val_ ^= static_cast<impl_type>(e);
     return *this;
   }
 
-  flags operator~() const noexcept { return flags(~val_); }
 
   void swap(flags &fl) noexcept { std::swap(val_, fl.val_); }
 
-  constexpr underlying_type underlying_value() const noexcept { return val_; }
-  void set_underlying_value(underlying_type newval) noexcept {
-    val_ = newval;
+
+  constexpr underlying_type underlying_value() const noexcept {
+    return static_cast<underlying_type>(val_);
   }
 
+  void set_underlying_value(underlying_type newval) noexcept {
+    val_ = static_cast<impl_type>(newval);
+  }
+
+
   bool empty() const noexcept { return !val_; }
+
   size_type size() const noexcept {
-    return std::accumulate(begin(), end(), static_cast<size_type>(0),
-                           [](size_type acc, enum_type) { return ++acc; });
+    return std::distance(this->begin(), this->end());
   }
-  constexpr size_type max_size() const noexcept {
-    return sizeof(impl_type) * 8;
-  }
+
+  constexpr size_type max_size() const noexcept { return bit_size(); }
+
 
   iterator begin() const noexcept { return cbegin(); }
   iterator cbegin() const noexcept { return iterator{val_}; }
 
-  iterator end() const noexcept { return {}; }
+  iterator end() const noexcept { return cend(); }
   iterator cend() const noexcept { return {}; }
+
 
   iterator find(enum_type e) const noexcept { return {val_, e}; }
 
@@ -211,72 +233,79 @@ public:
     return find(e) != end() ? 1 : 0;
   }
 
-  std::pair<iterator, iterator> equal_range(enum_type e) noexcept {
-    const auto &self = *this;
-    return self.equal_range(e);
-  }
-  std::pair<const_iterator, const_iterator>
-  equal_range(enum_type e) const noexcept {
+
+  std::pair<iterator, iterator> equal_range(enum_type e) const noexcept {
     auto i = find(e);
     auto j = i;
     return {i, ++j};
   }
 
+
   template <class... Args>
-  std::pair<iterator, bool> emplace(Args&&... args) noexcept {
+  std::pair<iterator, bool> emplace(Args && ... args) noexcept {
     return insert(enum_type{args...});
   }
+
   template <class... Args>
-  iterator emplace_hint (const_iterator, Args&&... args) noexcept {
-    return insert(enum_type{args...}).first;
+  iterator emplace_hint(iterator, Args && ... args) noexcept {
+    return emplace(args...).first;
   }
+
 
   std::pair<iterator, bool> insert(enum_type e) noexcept {
     auto i = find(e);
     if (i == end()) {
-      i.uvalue_ = val_ |= i.mask_ = static_cast<impl_type>(e);
+      i.mask_ = static_cast<impl_type>(e);
+      val_ |= i.mask_;
+      update_uvalue(i);
       return {i, true};
     }
     return {i, false};
   }
-  std::pair<iterator, bool> insert(const_iterator, enum_type e) noexcept {
+
+  std::pair<iterator, bool> insert(iterator, enum_type e) noexcept {
     return insert(e);
   }
-  template <class InputIter>
-  void insert(InputIter i1, InputIter i2) noexcept {
-    val_ |= std::accumulate(i1, i2, static_cast<impl_type>(0),
-                            [](impl_type i, enum_type e)
-                            { return i | static_cast<impl_type>(e); }
-                           );
-  }
-  void insert(const std::initializer_list<enum_type> &il) noexcept {
-      insert(il.begin(), il.end());
+
+  template <class FwIter>
+  auto insert(FwIter i1, FwIter i2)
+  noexcept(noexcept(++i1) && noexcept(*i1) && noexcept(i1 == i2))
+  -> typename convertible<decltype(*i1), void>::type {
+    val_ |= std::accumulate(i1, i2, impl_type{0}, [](impl_type i, enum_type e) {
+      return i | static_cast<impl_type>(e);
+    });
   }
 
-  iterator erase(const_iterator i) noexcept {
-    i.uvalue_ = val_ &= ~i.mask_;
+  template <class Container>
+  auto insert(const Container &ctn) noexcept
+  -> decltype(std::begin(ctn), std::end(ctn), void()) {
+    insert(std::begin(ctn), std::end(ctn));
+  }
+
+
+  iterator erase(iterator i) noexcept {
+    val_ ^= i.mask_;
+    update_uvalue(i);
     return ++i;
   }
+
   size_type erase(enum_type e) noexcept {
     auto e_count = count(e);
-    val_ &= ~static_cast<impl_type>(e);
+    val_ ^= static_cast<impl_type>(e);
     return e_count;
   }
-  iterator erase(const_iterator i1, const_iterator i2) noexcept {
-    iterator i;
-    i.uvalue_
-      = val_
-      &= ~std::accumulate(i1, i2, static_cast<impl_type>(0),
-                          [](impl_type i, enum_type e)
-                          { return i | static_cast<impl_type>(e); }
-                         );
-    i.mask_ = i2.mask_;
-      return ++i;
-    }
-    void clear() noexcept { val_ = 0; }
+
+  iterator erase(iterator i1, iterator i2) noexcept {
+    val_ ^= flags(i1, i2).val_;
+    update_uvalue(i2);
+    return ++i2;
+  }
+
+
+  void clear() noexcept { val_ = 0; }
 
 private:
-  constexpr explicit flags(impl_type val) noexcept : val_{val} {}
+  constexpr explicit flags(impl_type val) noexcept : val_(val) {}
 
   void update_uvalue(iterator &it) const noexcept { it.uvalue_ = val_; }
 
@@ -284,68 +313,75 @@ private:
 };
 
 
-template <class E> flags<E> operator|(flags<E> f1, flags<E> f2) noexcept {
+template <class E>
+constexpr flags<E> operator|(flags<E> f1, flags<E> f2) noexcept {
     return f1 |= f2;
 }
 
+template <class E>
+constexpr flags<E> operator|(flags<E> f, E e) noexcept {
+    return f |= e;
+}
 
-template <class E> flags<E> operator|(flags<E> f, E e) noexcept {
+template <class E>
+constexpr flags<E> operator|(E e, flags<E> f) noexcept {
     return f |= e;
 }
 
 
-template <class E> flags<E> operator|(E e, flags<E> f) noexcept {
-    return f |= e;
-}
-
-
-template <class E> flags<E> operator&(flags<E> f1, flags<E> f2) noexcept {
+template <class E>
+constexpr flags<E> operator&(flags<E> f1, flags<E> f2) noexcept {
     return f1 &= f2;
 }
 
+template <class E>
+constexpr flags<E> operator&(flags<E> f, E e) noexcept {
+    return f &= e;
+}
 
-template <class E> flags<E> operator&(flags<E> f, E e) noexcept {
+template <class E>
+constexpr flags<E> operator&(E e, flags<E> f) noexcept {;
     return f &= e;
 }
 
 
-template <class E> flags<E> operator&(E e, flags<E> f) noexcept {;
-    return f &= e;
-}
-
-
-template <class E> flags<E> operator^(flags<E> f1, flags<E> f2) noexcept {
+template <class E>
+constexpr flags<E> operator^(flags<E> f1, flags<E> f2) noexcept {
     return f1 ^= f2;
 }
 
-
-template <class E> flags<E> operator^(flags<E> f, E e) noexcept {
+template <class E>
+constexpr flags<E> operator^(flags<E> f, E e) noexcept {
     return f ^= e;
 }
 
-
-template <class E> flags<E> operator^(E e, flags<E> f) noexcept {
+template <class E>
+constexpr flags<E> operator^(E e, flags<E> f) noexcept {
   return f ^= e;
 }
 
 
 template <class E>
-bool operator==(const flags<E> &fl1, const flags<E> &fl2) noexcept {
+constexpr bool operator==(const flags<E> &fl1, const flags<E> &fl2) noexcept {
   return fl1.underlying_value() == fl2.underlying_value();
 }
 
 
 template <class E>
-bool operator!=(const flags<E> &fl1, const flags<E> &fl2) noexcept {
+constexpr bool operator!=(const flags<E> &fl1, const flags<E> &fl2) noexcept {
   return fl1.underlying_value() != fl2.underlying_value();
 }
+
+
+template <class E>
+constexpr void swap(flags<E> &fl1, flags<E> &fl2) noexcept { fl1.swap(fl2); }
 
 
 } // namespace flags
 
 
 template <class E>
-auto operator|(E e1, E e2) noexcept
+constexpr auto operator|(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
   return flags::flags<E>{e1} |= e2;
@@ -353,7 +389,7 @@ auto operator|(E e1, E e2) noexcept
 
 
 template <class E>
-auto operator&(E e1, E e2) noexcept
+constexpr auto operator&(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
   return flags::flags<E>{e1} &= e2;
@@ -361,7 +397,7 @@ auto operator&(E e1, E e2) noexcept
 
 
 template <class E>
-auto operator^(E e1, E e2) noexcept
+constexpr auto operator^(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
   return flags::flags<E>{e1} ^= e2;
