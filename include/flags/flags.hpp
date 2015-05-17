@@ -14,6 +14,9 @@
 namespace flags {
 
 
+constexpr struct empty_t{} empty;
+
+
 template <class E> struct flags {
 public:
   static_assert(is_flags<E>::value,
@@ -45,13 +48,14 @@ private:
 
 
 public:
-  constexpr flags() noexcept : val_(0) {}
+  flags() noexcept = default;
+  flags(const flags &fl) noexcept = default;
+  flags &operator=(const flags &fl) noexcept = default;
+  flags(flags &&fl) noexcept = default;
+  flags &operator=(flags &&fl) noexcept= default;
 
-  flags(const flags &fl) = default;
-  flags &operator=(const flags &fl) = default;
 
-  flags(flags &&fl) = default;
-  flags &operator=(flags &&fl) = default;
+  explicit constexpr flags(empty_t) noexcept : val_(0) {}
 
 
 #ifdef ENUM_CLASS_FLAGS_FORBID_IMPLICT_CONVERSION
