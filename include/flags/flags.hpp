@@ -178,7 +178,7 @@ public:
         return *this;
     }
     flags &operator^=(enum_type e) noexcept {
-        val_ &= static_cast<underlying_type>(e);
+        val_ ^= static_cast<underlying_type>(e);
         return *this;
     }
 
