@@ -9,6 +9,9 @@
 #include <utility>
 
 
+namespace flags {
+
+
 template <class E, class Enabler = void> struct flags;
 
 
@@ -298,14 +301,6 @@ template <class E> flags<E> operator|(E e, flags<E> f) noexcept {
 }
 
 
-template <class E>
-typename std::enable_if<
-    std::is_same<E, typename flags<E>::enum_type>::value,
-    flags<E>
->::type
-operator|(E e1, E e2) noexcept { return flags<E>{e1} |= e2; }
-
-
 template <class E> flags<E> operator&(flags<E> f1, flags<E> f2) noexcept {
     return f1 &= f2;
 }
@@ -319,13 +314,6 @@ template <class E> flags<E> operator&(flags<E> f, E e) noexcept {
 template <class E> flags<E> operator&(E e, flags<E> f) noexcept {;
     return f &= e;
 }
-
-template <class E>
-typename std::enable_if<
-    std::is_same<E, typename flags<E>::enum_type>::value,
-    flags<E>
->::type
-operator&(E e1, E e2) noexcept { return flags<E>{e1} &= e2; }
 
 
 template <class E> flags<E> operator^(flags<E> f1, flags<E> f2) noexcept {
@@ -342,13 +330,6 @@ template <class E> flags<E> operator^(E e, flags<E> f) noexcept {
     return f ^= e;
 }
 
-template <class E>
-typename std::enable_if<
-    std::is_same<E, typename flags<E>::enum_type>::value,
-    flags<E>
->::type
-operator^(E e1, E e2) noexcept { return flags<E>{e1} ^= e2; }
-
 
 template <class E>
 bool operator==(const flags<E> &fl1, const flags<E> &fl2) noexcept {
@@ -360,6 +341,33 @@ template <class E>
 bool operator!=(const flags<E> &fl1, const flags<E> &fl2) noexcept {
     return fl1.underlying_value() != fl2.underlying_value();
 }
+
+
+} // namespace flags
+
+
+template <class E>
+typename std::enable_if<
+    std::is_same<E, typename flags::flags<E>::enum_type>::value,
+    flags::flags<E>
+>::type
+operator|(E e1, E e2) noexcept { return flags::flags<E>{e1} |= e2; }
+
+
+template <class E>
+typename std::enable_if<
+    std::is_same<E, typename flags::flags<E>::enum_type>::value,
+    flags::flags<E>
+>::type
+operator&(E e1, E e2) noexcept { return flags::flags<E>{e1} &= e2; }
+
+
+template <class E>
+typename std::enable_if<
+    std::is_same<E, typename flags::flags<E>::enum_type>::value,
+    flags::flags<E>
+>::type
+operator^(E e1, E e2) noexcept { return flags::flags<E>{e1} ^= e2; }
 
 
 #endif // ENUM_CLASS_FLAGS_HPP
