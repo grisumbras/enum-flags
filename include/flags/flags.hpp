@@ -5,6 +5,7 @@
 #include "allow_flags.hpp"
 #include "iterator.hpp"
 
+#include <bitset>
 #include <initializer_list>
 #include <numeric>
 #include <utility>
@@ -132,6 +133,15 @@ public:
 
   void set_underlying_value(underlying_type newval) noexcept {
     val_ = static_cast<impl_type>(newval);
+  }
+
+
+  constexpr explicit operator std::bitset<bit_size()>() const noexcept {
+    return to_bitset();
+  }
+
+  constexpr std::bitset<bit_size()> to_bitset() const noexcept {
+    return {val_};
   }
 
 
