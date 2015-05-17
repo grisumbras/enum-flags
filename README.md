@@ -10,7 +10,7 @@ The only drawback to type safety is you cannot treat variables of *enum class*
 types as sets of flags. That is because *enum classes* do not cast to integers
 and there are no bitwise operators overloads defined for them.
 
-This project brings a `flags` class template which:
+This library brings a `flags` class template which:
 * does not convert to or from integer types;
 * does implicitly convert from enum it was instantiated by;
 * does not convert to that enum;
@@ -19,16 +19,23 @@ This project brings a `flags` class template which:
 * explicitly converts to bool (which allows to use it in boolean contexts, like
   in branching or loop conditions);
 * provides access to the underlying integer through member functions;
-* instantiates only for enum classes.
+* instantiates only for enums it was explicitly enabled for.
 
 ## Usage
 ``` c++
 enum class MyEnum { Value1 = 1 << 0, Value2 = 1 << 1 };
-using MyEnums = flags<MyEnum>; // actually this line is not necessary
 
-auto mask = Value1 | Value2; // set flags Value1 and Value 2
-if (mask & Value2) { // if Value2 flag is set
-    doSomething();
+namespace flags {
+template <> struct is_flags<MyEnum> : std::true_type {};
+}
+// or just use macro:
+// ALLOW_FLAGS_FOR_ENUM(MyEnum)
+
+using MyEnums = flags::flags<MyEnum>;
+
+MyEnums mask1 = Value1 | Value2; // set flags Value1 and Value 2
+if (mask1 & Value2) { // if Value2 flag is set
+  doSomething();
 }
 ```
 
@@ -36,7 +43,7 @@ if (mask & Value2) { // if Value2 flag is set
 ``` c++
 template <class E> class flags;
 ```
-where `E` is an enum class.
+where `E` is an enum.
 
 ### Member types
 Member type    |Definition                                                |Notes
