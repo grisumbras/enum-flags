@@ -75,6 +75,7 @@ public:
   flags &operator=(std::initializer_list<enum_type> il) noexcept {
     clear();
     insert(il);
+    return *this;
   }
 
   template <class ... Args>
@@ -84,7 +85,8 @@ public:
   template <class FwIter>
   flags(FwIter b, FwIter e,
         typename convertible<decltype(*b)>::type = nullptr)
-  noexcept(insert(std::declval<FwIter>(), std::declval<FwIter>()))
+  noexcept(noexcept(std::declval<flags>().insert(std::declval<FwIter>(),
+                                                 std::declval<FwIter>())))
   : val_(0)
   { insert(b, e); }
 
