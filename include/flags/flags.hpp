@@ -14,7 +14,9 @@
 namespace flags {
 
 
-constexpr struct empty_t{} empty;
+constexpr struct empty_t {
+    constexpr empty_t() noexcept {}
+} empty;
 
 
 template <class E> struct flags {
