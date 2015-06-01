@@ -15,7 +15,7 @@ namespace flags {
 
 
 constexpr struct empty_t {
-    constexpr empty_t() noexcept {}
+  constexpr empty_t() noexcept {}
 } empty;
 
 
