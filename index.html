@@ -1,105 +1,87 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Enum-flags by grisumbras</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+---
+layout: default
+---
+<section>
+  <div id="title">
+    <h1>{{ site.github.project_title }}</h1>
+    <p>{{ site.github.project_tagline }}</p>
+    <hr>
+    <span class="credits left">
+      Project maintained by
+      <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>
+    </span>
+    <span class="credits right">
+      Hosted on GitHub Pages &mdash;
+      Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a>
+    </span>
+  </div>
 
-  </head>
-  <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/grisumbras/enum-flags">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/grisumbras/enum-flags/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/grisumbras/enum-flags/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+  <h1>Flags for C++ 11 enum classes</h1>
 
-    <div class="wrapper">
+  <p>C++ 11 gives a new type of enums — <em>enum classes</em>.
+    These are strongly typed enumerations, they do not cast implicitly to or from
+    the underlying integer type. They also do not leak enumeration values to
+    enclosing scope (thus the names of this values do not clash and you no longer
+    need to prefix/suffix them with something to disambiguate).
+  </p>
 
-      <section>
-        <div id="title">
-          <h1>Enum-flags</h1>
-          <p>Flags for c++ 11 enum classes</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/grisumbras">grisumbras</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+  <p>
+    The only drawback to type safety is you cannot treat variables of
+    <em>enum class</em> types as sets of flags. That is because
+    <em>enum classes</em> do not cast to integers and there are no bitwise
+    operators overloads defined for them.
+  </p>
 
-        <h1>
-<a id="flags-for-c-11-enum-classes" class="anchor" href="#flags-for-c-11-enum-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flags for C++ 11 enum classes</h1>
+  <p>This project brings a <code>flags</code> class template which:</p>
 
-<p>C++ 11 gives a new type of enums — <em>enum classes</em>.
-These are strongly typed enumerations, they do not cast implicitly to or from
-the underlying integer type. They also do not leak enumeration values to
-enclosing scope (thus the names of this values do not clash and you no longer
-need to prefix/suffix them with something to disambiguate).</p>
+  <ul>
+    <li>does not convert to or from integer types;</li>
+    <li>does implicitly convert from enum it was instantiated by;</li>
+    <li>does not convert to that enum;</li>
+    <li>supports all bitwise operations except for shifts (since shifts are not
+      very reasonable for flags);
+    </li>
+    <li>explicitly converts to bool (which allows to use it in boolean contexts,
+      like in branching or loop conditions);
+    </li>
+    <li>provides access to the underlying integer through member functions;</li>
+    <li>instantiates only for enum classes.</li>
+  </ul>
 
-<p>The only drawback to type safety is you cannot treat variables of <em>enum class</em>
-types as sets of flags. That is because <em>enum classes</em> do not cast to integers
-and there are no bitwise operators overloads defined for them.</p>
+  <h2>Usage</h2>
 
-<p>This project brings a <code>flags</code> class template which:</p>
+{% highlight c++ %}
+enum class MyEnum { Value1 = 1 << 0, Value2 = 1 << 1 };
+using MyEnums = flags::flags<MyEnum>; // actually this line is not necessary
 
-<ul>
-<li>does not convert to or from integer types;</li>
-<li>does implicitly convert from enum it was instantiated by;</li>
-<li>does not convert to that enum;</li>
-<li>supports all bitwise operations except for shifts (since shifts are not very
-reasonable for flags);</li>
-<li>explicitly converts to bool (which allows to use it in boolean contexts, like
-in branching or loop conditions);</li>
-<li>provides access to the underlying integer through member functions;</li>
-<li>instantiates only for enum classes.</li>
-</ul>
+auto mask = flags::Value1 | flags::Value2; // set flags Value1 and Value 2
+if (mask & flags::Value2) { // if Value2 flag is set
+    doSomething();
+}
+{% endhighlight %}
 
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+  <h2>Description</h2>
 
-<div class="highlight highlight-c++"><pre><span class="pl-st">enum</span> <span class="pl-st">class</span> <span class="pl-en">MyEnum</span> { Value1 = <span class="pl-c1">1</span> &lt;&lt; <span class="pl-c1">0</span>, Value2 = <span class="pl-c1">1</span> &lt;&lt; <span class="pl-c1">1</span> };
-<span class="pl-k">using</span> MyEnums = flags&lt;MyEnum&gt;; <span class="pl-c">// actually this line is not necessary</span>
+{% highlight c++ %}template <class E> class flags;{% endhighlight %}
 
-<span class="pl-st">auto</span> mask = Value1 | Value2; <span class="pl-c">// set flags Value1 and Value 2</span>
-<span class="pl-k">if</span> (mask &amp; Value2) { <span class="pl-c">// if Value2 flag is set</span>
-    <span class="pl-s3">doSomething</span>();
-}</pre></div>
+  <p>where <code>E</code> is an enum class.</p>
 
-<h2>
-<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
+  <h3>Member types</h3>
 
-<div class="highlight highlight-c++"><pre><span class="pl-st">template </span>&lt;<span class="pl-st">class</span> <span class="pl-en">E</span>&gt; <span class="pl-st">class</span> <span class="pl-en">flags</span>;</pre></div>
-
-<p>where <code>E</code> is an enum class.</p>
-
-<h3>
-<a id="member-types" class="anchor" href="#member-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Member types</h3>
-
-<table>
-<thead>
-<tr>
-<th>Member type</th>
-<th>Definition</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>enum_type</td>
-<td>The template parameter (E)</td>
-<td></td>
-</tr>
+  <table>
+    <thead>
+      <tr>
+        <th>Member type</th>
+        <th>Definition</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>enum_type</td>
+    <td>The template parameter (E)</td>
+    <td></td>
+    </tr>
 <tr>
 <td>underlying_type</td>
 <td>The integer type that is used as representation of <code>flags</code>
@@ -352,10 +334,4 @@ which returns a new <code>flags</code> value.</p>
 </tr>
 </tbody>
 </table>
-      </section>
-
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
-  </body>
-</html>
+</section>

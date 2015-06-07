@@ -22,3 +22,9 @@
 
 # Test artefacts
 test/bin
+examples/bin
+
+# Docs build artefacts
+_site
+.sass-cache
+.jekyll-metadata

@@ -1,0 +1,16 @@
+baseurl: ""
+
+github: # only for testing
+  project_title: enum-flags
+  project_tagline: Bit flags for C++11 scoped enums
+  owner_name: grisumbras
+  owner_url: https://github.com/grisumbras
+  repository_url: https://github.com//grisumbras/enum-flags
+  zip_url: https://github.com/grisumbras/enum-flags/zipball/master
+  tar_url: https://github.com/grisumbras/enum-flags/tarball/master
+  url: http://http://grisumbras.github.io/enum-flags/
+
+markdown: kramdown
+
+sass:
+  style: :compressed

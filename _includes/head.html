@@ -1,0 +1,22 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.github.project_title }}{% endif %}</title>
+  <meta name="description" content="{{ site.github.project_tagline }}">
+
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+
+  <link rel="stylesheet" href="{{ "/assets/css/styles.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/assets/css/pygment_trac.css" | prepend: site.baseurl }}">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="{{ "/assets/js/respond.js" | prepend: site.baseurl }}"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <!--[if lt IE 8]>
+  <link rel="stylesheet" href="{{ "/assets/css/ie.css" | prepend: site.baseurl }}"
+  <![endif]-->
+</head>
