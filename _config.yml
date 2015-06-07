@@ -12,5 +12,17 @@ github: # only for testing
 
 markdown: kramdown
 
+kramdown:
+  input: GFM
+
+permalink: pretty
+
+exclude:
+  - include
+  - test
+  - examples
+  - README.md
+  - LICENSE
+
 sass:
   style: :compressed

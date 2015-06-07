@@ -1,0 +1,11 @@
+import testing ;
+
+
+project flags_examples
+  : requirements <warnings>all
+                 <cxxflags>-std=c++11
+                 <include>../include/
+  : default-build <variant>release
+  ;
+
+compile example0.cpp ;
