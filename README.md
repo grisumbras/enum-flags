@@ -33,8 +33,8 @@ template <> struct is_flags<MyEnum> : std::true_type {};
 
 using MyEnums = flags::flags<MyEnum>;
 
-MyEnums mask1 = Value1 | Value2; // set flags Value1 and Value 2
-if (mask1 & Value2) { // if Value2 flag is set
+MyEnums mask1 = MyEnum::Value1 | MyEnum::Value2; // set flags Value1 and Value 2
+if (mask1 & MyEnum::Value2) { // if Value2 flag is set
   doSomething();
 }
 ```
