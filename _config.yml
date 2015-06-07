@@ -1,4 +1,4 @@
-baseurl: ""
+baseurl: /enum-flags
 
 github: # only for testing
   project_title: enum-flags
