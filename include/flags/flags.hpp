@@ -15,7 +15,7 @@ namespace flags {
 
 
 constexpr struct empty_t {
-    constexpr empty_t() noexcept {}
+  constexpr empty_t() noexcept {}
 } empty;
 
 
@@ -97,8 +97,16 @@ public:
 
   constexpr bool operator!() const noexcept { return !val_; }
 
-  flags operator~() const noexcept { return flags(~val_); }
+  friend constexpr bool operator==(flags fl1, flags fl2) {
+    return fl1.val_ == fl2.val_;
+  }
 
+  friend constexpr bool operator!=(flags fl1, flags fl2) {
+    return fl1.val_ != fl2.val_;
+  }
+
+
+  constexpr flags operator~() const noexcept { return flags(~val_); }
 
   flags &operator|=(const flags &fl) noexcept {
     val_ |= fl.val_;
@@ -131,6 +139,18 @@ public:
     return *this;
   }
 
+  friend constexpr flags operator|(flags f1, flags f2) noexcept {
+    return flags{f1.val_ | f2.val_};
+  }
+
+  friend constexpr flags operator&(flags f1, flags f2) noexcept {
+    return flags{f1.val_ & f2.val_};
+  }
+
+  friend  constexpr flags operator^(flags f1, flags f2) noexcept {
+    return flags{f1.val_ ^ f2.val_};
+  }
+
 
   void swap(flags &fl) noexcept { std::swap(val_, fl.val_); }
 
@@ -153,7 +173,7 @@ public:
   }
 
 
-  bool empty() const noexcept { return !val_; }
+  constexpr bool empty() const noexcept { return !val_; }
 
   size_type size() const noexcept {
     return std::distance(this->begin(), this->end());
@@ -165,13 +185,13 @@ public:
   iterator begin() const noexcept { return cbegin(); }
   iterator cbegin() const noexcept { return iterator{val_}; }
 
-  iterator end() const noexcept { return cend(); }
-  iterator cend() const noexcept { return {}; }
+  constexpr iterator end() const noexcept { return cend(); }
+  constexpr iterator cend() const noexcept { return {}; }
 
 
-  iterator find(enum_type e) const noexcept { return {val_, e}; }
+  constexpr iterator find(enum_type e) const noexcept { return {val_, e}; }
 
-  size_type count(enum_type e) const noexcept {
+  constexpr size_type count(enum_type e) const noexcept {
     return find(e) != end() ? 1 : 0;
   }
 
@@ -256,67 +276,7 @@ private:
 
 
 template <class E>
-constexpr flags<E> operator|(flags<E> f1, flags<E> f2) noexcept {
-    return f1 |= f2;
-}
-
-template <class E>
-constexpr flags<E> operator|(flags<E> f, E e) noexcept {
-    return f |= e;
-}
-
-template <class E>
-constexpr flags<E> operator|(E e, flags<E> f) noexcept {
-    return f |= e;
-}
-
-
-template <class E>
-constexpr flags<E> operator&(flags<E> f1, flags<E> f2) noexcept {
-    return f1 &= f2;
-}
-
-template <class E>
-constexpr flags<E> operator&(flags<E> f, E e) noexcept {
-    return f &= e;
-}
-
-template <class E>
-constexpr flags<E> operator&(E e, flags<E> f) noexcept {;
-    return f &= e;
-}
-
-
-template <class E>
-constexpr flags<E> operator^(flags<E> f1, flags<E> f2) noexcept {
-    return f1 ^= f2;
-}
-
-template <class E>
-constexpr flags<E> operator^(flags<E> f, E e) noexcept {
-    return f ^= e;
-}
-
-template <class E>
-constexpr flags<E> operator^(E e, flags<E> f) noexcept {
-  return f ^= e;
-}
-
-
-template <class E>
-constexpr bool operator==(const flags<E> &fl1, const flags<E> &fl2) noexcept {
-  return fl1.underlying_value() == fl2.underlying_value();
-}
-
-
-template <class E>
-constexpr bool operator!=(const flags<E> &fl1, const flags<E> &fl2) noexcept {
-  return fl1.underlying_value() != fl2.underlying_value();
-}
-
-
-template <class E>
-constexpr void swap(flags<E> &fl1, flags<E> &fl2) noexcept { fl1.swap(fl2); }
+void swap(flags<E> &fl1, flags<E> &fl2) noexcept { fl1.swap(fl2); }
 
 
 } // namespace flags
@@ -326,7 +286,7 @@ template <class E>
 constexpr auto operator|(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
-  return flags::flags<E>{e1} |= e2;
+  return flags::flags<E>(e1) | e2;
 }
 
 
@@ -334,7 +294,7 @@ template <class E>
 constexpr auto operator&(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
-  return flags::flags<E>{e1} &= e2;
+  return flags::flags<E>(e1) & e2;
 }
 
 
@@ -342,7 +302,7 @@ template <class E>
 constexpr auto operator^(E e1, E e2) noexcept
 -> typename std::enable_if<flags::is_flags<E>::value,
                            flags::flags<E>>::type {
-  return flags::flags<E>{e1} ^= e2;
+  return flags::flags<E>(e1) ^ e2;
 }
 
 

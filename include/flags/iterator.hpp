@@ -60,7 +60,7 @@ private:
   using impl_type = typename flags_type::impl_type;
 
 
-  explicit FlagsIterator(impl_type uv) noexcept : mask_(1), uvalue_(uv) {
+  explicit FlagsIterator(impl_type uv) noexcept : uvalue_(uv), mask_(1) {
     if (!(mask_ & uvalue_)) { nextMask(); }
   }
 

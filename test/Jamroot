@@ -1,5 +1,6 @@
 import testing ;
 
+
 project flags_tests
   : requirements <warnings>all
                  <cxxflags>-std=c++11
@@ -19,3 +20,11 @@ unit-test main-test
   : <define>BOOST_TEST_DYN_LINK
     <define>BOOST_TEST_MODULE=enum_flags
   ;
+
+
+compile should-compile.cpp ;
+
+
+for src in [ glob shouldnt-compile/*.cpp ] {
+  compile-fail $(src) ;
+}

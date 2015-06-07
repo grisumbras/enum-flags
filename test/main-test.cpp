@@ -1,14 +1,8 @@
-#include <flags/flags.hpp>
+#include "common.hpp"
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-
-
-enum class Enum : int {One = 1, Two = 2, Four = 4, Eight = 8};
-ALLOW_FLAGS_FOR_ENUM(Enum)
-
-using Enums = flags::flags<Enum>;
 
 
 BOOST_AUTO_TEST_CASE(set_underlying_value) {
