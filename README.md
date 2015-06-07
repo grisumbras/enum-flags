@@ -40,6 +40,9 @@ if (mask1 & Value2) { // if Value2 flag is set
 ```
 
 ## Description
+
+**Disclaimer: docs are currently out of sync a little bit**
+
 ``` c++
 template <class E> class flags;
 ```
@@ -56,7 +59,8 @@ underlying_type|The integer type that is used as representation of `flags`|Equiv
 #### Constructors and assignment operators
 Name                         |Description
 -----------------------------|-----------
-`flags()`                    |Default contructor (all flags are unset)
+`flags()`                    |Default contructor, keeps object uninitialized (note: object may contain garbage)
+`flags(empty_t)`             |Unsets all flags
 `flags(flags::enum_type)`    |Sets flag denoted by the parameter
 `flags(const flags&)`        |Copy constructor
 `flags(flags&&)`             |Move constructor
