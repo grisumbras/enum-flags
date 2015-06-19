@@ -3,20 +3,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
   <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
 
-  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.github.project_title }}{% endif %}</title>
+  <title>{{ site.github.project_title }}{% if page.title %} | {{ page.title }}{% endif %}</title>
   <meta name="description" content="{{ site.github.project_tagline }}"/>
 
   <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html','' }}"/>
+  {%if page.next %}
+    <link rel="next" href="{{ site.url }}{{ site.baseurl }}{{ page.next | replace:'index.html','' }}"/>
+  {% endif %}
+  {%if page.prev %}
+    <link rel="prev" href="{{ site.url }}{{ site.baseurl }}{{ page.prev | replace:'index.html','' }}"/>
+  {% endif %}
 
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/styles.css"/>
-  <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/pygment_trac.css"/>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script src="{{ site.baseurl }}/assets/js/respond.js"></script>
   <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
   <![endif]-->
   <!--[if lt IE 8]>
     <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/ie.css"/>
   <![endif]-->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/pygment_trac.css"/>
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,400italic,700,700italic,300,600,600italic">
 </head>

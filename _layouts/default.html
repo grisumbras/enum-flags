@@ -4,7 +4,23 @@
   <body>
     {% include header.html %}
     <div class="wrapper">
-      {{ content }}
+      <main>
+        {{ content }}
+        <nav class="doc-nav">
+          {% if page.prev %}
+            <a class="prev-page" href="{{ site.baseurl }}{{ page.prev }}">
+              <i class="icon"></i>
+              <span class="text">Back</span>
+            </a>
+          {% endif %}
+          {% if page.next %}
+            <a class="next-page" href="{{ site.baseurl }}{{ page.next }}">
+              <i class="icon"></i>
+              <span class="text">Next</span>
+            </a>
+          {% endif %}
+        </nav>
+      </main>
     </div>
     {% include footer.html %}
     <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->

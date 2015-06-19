@@ -1,329 +1,44 @@
 ---
 layout: default
+next: /overview/
 ---
-<section>
-  <div id="title">
-    <h1>{{ site.github.project_title }}</h1>
-    <p>{{ site.github.project_tagline }}</p>
-    <hr>
-    <span class="credits left">
-      Project maintained by
-      <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>
-    </span>
-    <span class="credits right">
-      Hosted on GitHub Pages &mdash;
-      Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a>
-    </span>
-  </div>
-
-  <h1>Flags for C++ 11 enum classes</h1>
-
-  <p>C++ 11 gives a new type of enums — <em>enum classes</em>.
-    These are strongly typed enumerations, they do not cast implicitly to or from
-    the underlying integer type. They also do not leak enumeration values to
-    enclosing scope (thus the names of this values do not clash and you no longer
-    need to prefix/suffix them with something to disambiguate).
-  </p>
+<article>
+  {% include main_title.html title=site.github.project_title subtitle=site.github.project_tagline show_vanity_links=true %}
 
   <p>
-    The only drawback to type safety is you cannot treat variables of
-    <em>enum class</em> types as sets of flags. That is because
-    <em>enum classes</em> do not cast to integers and there are no bitwise
-    operators overloads defined for them.
+    enum-flags is a C++ library that allows you to convert scoped enums into bit
+    flags.<br/>
+    You can use it as simple as this:
   </p>
+  {% highlight c++ %}{% include_relative examples/example0.cpp %}{% endhighlight %}
 
-  <p>This project brings a <code>flags</code> class template which:</p>
-
+  <h2>Documentation</h2>
   <ul>
-    <li>does not convert to or from integer types;</li>
-    <li>does implicitly convert from enum it was instantiated by;</li>
-    <li>does not convert to that enum;</li>
-    <li>supports all bitwise operations except for shifts (since shifts are not
-      very reasonable for flags);
+    <li>
+      <h3>
+        <a href="{{ site.baseurl }}/overview/index.html">
+          Overview
+        </a>
+      </h3>
+      An overview of the features and the design.
     </li>
-    <li>explicitly converts to bool (which allows to use it in boolean contexts,
-      like in branching or loop conditions);
+
+    <li>
+      <h3>
+        <a href="{{ site.baseurl }}/tutorial/index.html">
+          Tutorial
+        </a>
+      </h3>
+      A tutorial that shows how to use the library.
     </li>
-    <li>provides access to the underlying integer through member functions;</li>
-    <li>instantiates only for enum classes.</li>
+
+    <li>
+      <h3>
+        <a href="{{ site.baseurl }}/reference/index.html">
+          Reference
+        </a>
+      </h3>
+      API reference.
+    </li>
   </ul>
-
-  <h2>Usage</h2>
-
-{% highlight c++ %}{% include_relative examples/example0.cpp %}{% endhighlight %}
-
-  <h2>Description</h2>
-
-{% highlight c++ %}template <class E> class flags;{% endhighlight %}
-
-  <p>where <code>E</code> is an enum class.</p>
-
-  <h3>Member types</h3>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Member type</th>
-        <th>Definition</th>
-        <th>Notes</th>
-      </tr>
-    </thead>
-    <tbody>
-    <tr>
-    <td>enum_type</td>
-    <td>The template parameter (E)</td>
-    <td></td>
-    </tr>
-<tr>
-<td>underlying_type</td>
-<td>The integer type that is used as representation of <code>flags</code>
-</td>
-<td>Equivalent of <code>std::underlying_type&lt;E&gt;::type</code>
-</td>
-</tr>
-</tbody>
-</table>
-
-<h3>
-<a id="member-functions" class="anchor" href="#member-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Member functions</h3>
-
-<h4>
-<a id="constructors-and-assignment-operators" class="anchor" href="#constructors-and-assignment-operators" aria-hidden="true"><span class="octicon octicon-link"></span></a>Constructors and assignment operators</h4>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>flags()</code></td>
-<td>Default contructor (all flags are unset)</td>
-</tr>
-<tr>
-<td><code>flags(flags::enum_type)</code></td>
-<td>Sets flag denoted by the parameter</td>
-</tr>
-<tr>
-<td><code>flags(const flags&amp;)</code></td>
-<td>Copy constructor</td>
-</tr>
-<tr>
-<td><code>flags(flags&amp;&amp;)</code></td>
-<td>Move constructor</td>
-</tr>
-<tr>
-<td><code>operator=(flags::enum_type)</code></td>
-<td>Unsets all flags, then sets flag denoted by the parameter</td>
-</tr>
-<tr>
-<td><code>operator=(const flags&amp;)</code></td>
-<td>Copy assignment</td>
-</tr>
-<tr>
-<td><code>operator=(flags&amp;&amp;)</code></td>
-<td>Move assignment</td>
-</tr>
-</tbody>
-</table>
-
-<h4>
-<a id="bitwise-operators" class="anchor" href="#bitwise-operators" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bitwise operators</h4>
-
-<p>All functions in this group return reference to <code>flags</code>, except for <code>operator~</code>
-which returns a new <code>flags</code> value.</p>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>operator|=(flags::enum_type)</code></td>
-<td>Bitwise OR with flag denoted by the parameter</td>
-</tr>
-<tr>
-<td><code>operator|=(const flags&amp;)</code></td>
-<td>Bitwise OR with flags in the parameter</td>
-</tr>
-<tr>
-<td><code>operator&amp;=(flags::enum_type)</code></td>
-<td>Bitwise AND with flag denoted by the parameter`</td>
-</tr>
-<tr>
-<td><code>operator&amp;=(const flags&amp;)</code></td>
-<td>Bitwise AND with flags in the parameter</td>
-</tr>
-<tr>
-<td><code>operator^=(flags::enum_type)</code></td>
-<td>Bitwise XOR with flag denoted by the parameter</td>
-</tr>
-<tr>
-<td><code>operator^=(const flags&amp;)</code></td>
-<td>Bitwise XOR with flags in the parameter</td>
-</tr>
-<tr>
-<td><code>operator~()</code></td>
-<td>Bitwise negation</td>
-</tr>
-</tbody>
-</table>
-
-<h4>
-<a id="boolean-conversions" class="anchor" href="#boolean-conversions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Boolean conversions</h4>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>operator bool()</code></td>
-<td>Returns <code>true</code> if any of the flags is set</td>
-</tr>
-<tr>
-<td><code>operator!()</code></td>
-<td>Returns <code>true</code> if none of the flags is set</td>
-</tr>
-</tbody>
-</table>
-
-<h4>
-<a id="raw-access-to-integer-representation" class="anchor" href="#raw-access-to-integer-representation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Raw access to integer representation</h4>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>underlying_value()</code></td>
-<td>Returns integer representation</td>
-</tr>
-<tr>
-<td><code>set_underlying_value(flags::underlying_type)</code></td>
-<td>Sets integer representation to new value</td>
-</tr>
-</tbody>
-</table>
-
-<h4>
-<a id="various-functions" class="anchor" href="#various-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Various functions</h4>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>swap(flags)</code></td>
-<td>Swaps two <code>flags</code> values</td>
-</tr>
-</tbody>
-</table>
-
-<h3>
-<a id="nonmember-functions" class="anchor" href="#nonmember-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Nonmember functions</h3>
-
-<h4>
-<a id="bitwise-operators-1" class="anchor" href="#bitwise-operators-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bitwise operators</h4>
-
-<p>All functions in this group return new <code>flags</code> value.</p>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>operator|(flags, flags)</code></td>
-<td>Bitwise OR of two <code>flags</code> values</td>
-</tr>
-<tr>
-<td><code>operator|(flags, flags::enum_type)</code></td>
-<td>Bitwise OR of a <code>flags</code> value and a flag denoted by an enum value</td>
-</tr>
-<tr>
-<td><code>operator|(flags::enum_type, flags)</code></td>
-<td>Bitwise OR of a <code>flags</code> value and a flag denoted by an enum value</td>
-</tr>
-<tr>
-<td><code>operator|(flags::enum_type, flags::enum_type)</code></td>
-<td>Bitwise OR of two flags denoted by enum values</td>
-</tr>
-<tr>
-<td><code>operator&amp;(flags, flags)</code></td>
-<td>Bitwise AND of two <code>flags</code> values</td>
-</tr>
-<tr>
-<td><code>operator&amp;(flags, flags::enum_type)</code></td>
-<td>Bitwise AND of a <code>flags</code> value and a flag denoted by an enum value</td>
-</tr>
-<tr>
-<td><code>operator&amp;(flags::enum_type, flags)</code></td>
-<td>Bitwise AND of a <code>flags</code> value and a flag denoted by an enum value</td>
-</tr>
-<tr>
-<td><code>operator&amp;(flags::enum_type, flags::enum_type)</code></td>
-<td>Bitwise AND of two flags denoted by enum values</td>
-</tr>
-<tr>
-<td><code>operator^(flags, flags)</code></td>
-<td>Bitwise XOR of two <code>flags</code> values</td>
-</tr>
-<tr>
-<td><code>operator^(flags, flags::enum_type)</code></td>
-<td>Bitwise XOR of a <code>flags</code> value and a flag denoted by an enum value</td>
-</tr>
-<tr>
-<td><code>operator^(flags::enum_type, flags)</code></td>
-<td>Bitwise XOR of a <code>flags</code> value and a flag denoted by an enum value</td>
-</tr>
-<tr>
-<td><code>operator^(flags::enum_type, flags::enum_type)</code></td>
-<td>Bitwise XOR of two flags denoted by enum values</td>
-</tr>
-</tbody>
-</table>
-
-<h4>
-<a id="comparison-operators" class="anchor" href="#comparison-operators" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparison operators</h4>
-
-<p>All functions in this group return <code>bool</code>.</p>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>operator==(flags, flags)</code></td>
-<td>Compares if two <code>flags</code> values are equal</td>
-</tr>
-<tr>
-<td><code>operator!=(flags, flags)</code></td>
-<td>Compares if two <code>flags</code> values are not equal</td>
-</tr>
-</tbody>
-</table>
-</section>
+</article>

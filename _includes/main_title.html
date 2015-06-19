@@ -1,0 +1,24 @@
+<header id="title">
+  {% if include.home %}
+    <div id="home-link-box">
+      <p>
+        <a href="{{ site.url }}{{ site.baseurl }}/" class="home-link">
+          <i class="icon"></i> {{ site.github.project_title }}
+        </a>
+      </p>
+    </div>
+  {% endif %}
+  <h1>{{ include.title }}</h1>
+  {% if include.subtitle %}<p>{{ include.subtitle }}</p>{% endif %}
+  <hr>
+  {% if include.show_vanity_links %}
+  <span class="credits left">
+    Project maintained by
+    <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>
+  </span>
+  <span class="credits right">
+    Hosted on GitHub Pages &mdash;
+    Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a>
+  </span>
+  {% endif %}
+</header>

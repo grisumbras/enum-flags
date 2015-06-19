@@ -1,73 +1,42 @@
 ---
 ---
-@font-face {
-  font-family: 'OpenSansLight';
-  src: url("../fonts/OpenSans-Light-webfont.eot");
-  src: url("../fonts/OpenSans-Light-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-Light-webfont.woff") format("woff"), url("../fonts/OpenSans-Light-webfont.ttf") format("truetype"), url("../fonts/OpenSans-Light-webfont.svg#OpenSansLight") format("svg");
-  font-weight: normal;
-  font-style: normal;
+
+$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.3.0/fonts" !default;
+
+@import "variables";
+@import "mixins";
+@import "path";
+
+
+@mixin icon($icon-name) {
+  @include fa-icon ;
+  &:before { content: $icon-name; }
 }
 
-@font-face {
-  font-family: 'OpenSansLightItalic';
-  src: url("../fonts/OpenSans-LightItalic-webfont.eot");
-  src: url("../fonts/OpenSans-LightItalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-LightItalic-webfont.woff") format("woff"), url("../fonts/OpenSans-LightItalic-webfont.ttf") format("truetype"), url("../fonts/OpenSans-LightItalic-webfont.svg#OpenSansLightItalic") format("svg");
-  font-weight: normal;
-  font-style: normal;
+
+@mixin nav-link($icon) {
+  .icon {
+    @include icon($icon);
+    color: #e8e8e8;
+    &:hover { color: #e8e8e8; }
+  }
+
+  .text {
+    width: 0;
+    display: inline-block;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }
 
-@font-face {
-  font-family: 'OpenSansRegular';
-  src: url("../fonts/OpenSans-Regular-webfont.eot");
-  src: url("../fonts/OpenSans-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-Regular-webfont.woff") format("woff"), url("../fonts/OpenSans-Regular-webfont.ttf") format("truetype"), url("../fonts/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg");
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-}
 
-@font-face {
-  font-family: 'OpenSansItalic';
-  src: url("../fonts/OpenSans-Italic-webfont.eot");
-  src: url("../fonts/OpenSans-Italic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-Italic-webfont.woff") format("woff"), url("../fonts/OpenSans-Italic-webfont.ttf") format("truetype"), url("../fonts/OpenSans-Italic-webfont.svg#OpenSansItalic") format("svg");
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-}
-
-@font-face {
-  font-family: 'OpenSansSemibold';
-  src: url("../fonts/OpenSans-Semibold-webfont.eot");
-  src: url("../fonts/OpenSans-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-Semibold-webfont.woff") format("woff"), url("../fonts/OpenSans-Semibold-webfont.ttf") format("truetype"), url("../fonts/OpenSans-Semibold-webfont.svg#OpenSansSemibold") format("svg");
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-}
-
-@font-face {
-  font-family: 'OpenSansSemiboldItalic';
-  src: url("../fonts/OpenSans-SemiboldItalic-webfont.eot");
-  src: url("../fonts/OpenSans-SemiboldItalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-SemiboldItalic-webfont.woff") format("woff"), url("../fonts/OpenSans-SemiboldItalic-webfont.ttf") format("truetype"), url("../fonts/OpenSans-SemiboldItalic-webfont.svg#OpenSansSemiboldItalic") format("svg");
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-}
-
-@font-face {
-  font-family: 'OpenSansBold';
-  src: url("../fonts/OpenSans-Bold-webfont.eot");
-  src: url("../fonts/OpenSans-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-Bold-webfont.woff") format("woff"), url("../fonts/OpenSans-Bold-webfont.ttf") format("truetype"), url("../fonts/OpenSans-Bold-webfont.svg#OpenSansBold") format("svg");
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-}
-
-@font-face {
-  font-family: 'OpenSansBoldItalic';
-  src: url("../fonts/OpenSans-BoldItalic-webfont.eot");
-  src: url("../fonts/OpenSans-BoldItalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans-BoldItalic-webfont.woff") format("woff"), url("../fonts/OpenSans-BoldItalic-webfont.ttf") format("truetype"), url("../fonts/OpenSans-BoldItalic-webfont.svg#OpenSansBoldItalic") format("svg");
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
+@mixin clearfix() {
+  &:after {
+    content:"";
+    display:table;
+    clear:both;
+  }
 }
 
 /* normalize.css 2012-02-07T12:37 UTC - http://github.com/necolas/normalize.css */
@@ -86,7 +55,7 @@ footer,
 header,
 hgroup,
 nav,
-section,
+main,
 summary {
   display: block;
 }
@@ -177,7 +146,7 @@ a:active {
    ========================================================================== */
 /*
  * Addresses font sizes and margins set differently in IE6/7
- * Addresses font sizes within 'section' and 'article' in FF4+, Chrome, S5
+ * Addresses font sizes within 'main' and 'article' in FF4+, Chrome, S5
  */
 h1 {
   font-size: 2em;
@@ -533,7 +502,7 @@ table {
 body {
   padding: 0px 0 20px 0px;
   margin: 0px;
-  font: 14px/1.5 "OpenSansRegular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 14px/1.5 "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #f0e7d5;
   font-weight: normal;
   background: #252525;
@@ -549,7 +518,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   color: #e8e8e8;
   margin: 0 0 10px;
-  font-family: 'OpenSansRegular', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
 }
 
@@ -576,7 +545,7 @@ h4, h5, h6 {
 h3 {
   font-size: 18px;
   line-height: 24px;
-  font-family: 'OpenSansRegular', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   color: #b6b6b6;
 }
@@ -602,8 +571,8 @@ ul {
 }
 
 strong {
-  font-family: 'OpenSansBold', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight: normal;
+  font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight: 700;
 }
 
 .wrapper {
@@ -613,7 +582,7 @@ strong {
   padding: 0 20px;
 }
 
-section img {
+main img {
   max-width: 100%;
 }
 
@@ -626,10 +595,8 @@ blockquote {
 
 code {
   font-family: "Lucida Sans", Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal, monospace;
-  color: #efefef;
-  font-size: 13px;
-  margin: 0 4px;
-  padding: 4px 6px;
+  color: darken(#efefef, 25);
+  font-size: 1.1em;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   -o-border-radius: 2px;
@@ -638,7 +605,7 @@ code {
   border-radius: 2px;
 }
 
-pre {
+pre, .toc {
   padding: 8px 15px;
   background: #191919;
   -moz-border-radius: 2px;
@@ -672,8 +639,8 @@ th {
   padding: 5px 10px;
   border-bottom: 1px solid #434343;
   color: #b6b6b6;
-  font-family: 'OpenSansSemibold', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight: normal;
+  font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight: 600;
 }
 
 td {
@@ -692,8 +659,8 @@ hr {
 
 dt {
   color: #F0E7D5;
-  font-family: 'OpenSansSemibold', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight: normal;
+  font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight: 600;
 }
 
 #header {
@@ -709,123 +676,205 @@ dt {
   -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
   -o-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
-}
-#header nav {
-  max-width: 650px;
-  margin: 0 auto;
-  padding: 0 10px;
-  background: blue;
-  margin: 6px auto;
-}
-#header nav ul {
-/*   display: inline-block; */
-  margin: 0px;
-  padding: 0px;
-}
-#header nav li {
-  font-family: 'OpenSansLight', "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: normal;
-  list-style: none;
-  display: inline;
-  color: white;
-  line-height: 50px;
-  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
-  font-size: 14px;
-}
-#header nav li a {
-  color: white;
-  border: 1px solid #5d910b;
-  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #93bd20), color-stop(100%, #659e10));
-  background: -webkit-linear-gradient(#93bd20, #659e10);
-  background: -moz-linear-gradient(#93bd20, #659e10);
-  background: -o-linear-gradient(#93bd20, #659e10);
-  background: -ms-linear-gradient(#93bd20, #659e10);
-  background: linear-gradient(#93bd20, #659e10);
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -o-border-radius: 2px;
-  -ms-border-radius: 2px;
-  -khtml-border-radius: 2px;
-  border-radius: 2px;
-  -moz-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
-  -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
-  -o-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
-  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
-  background-color: #93bd20;
-  padding: 10px 12px;
-  margin-top: 6px;
-  line-height: 14px;
-  font-size: 14px;
-  display: inline-block;
-  text-align: center;
-}
-#header nav li a:hover {
-  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #749619), color-stop(100%, #527f0e));
-  background: -webkit-linear-gradient(#749619, #527f0e);
-  background: -moz-linear-gradient(#749619, #527f0e);
-  background: -o-linear-gradient(#749619, #527f0e);
-  background: -ms-linear-gradient(#749619, #527f0e);
-  background: linear-gradient(#749619, #527f0e);
-  background-color: #659e10;
-  border: 1px solid #527f0e;
-  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
-  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
-  -o-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
-  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
-}
-#header nav li.fork {
-  float: left;
-  margin-left: 0px;
-}
-#header nav li.downloads {
-  float: right;
-  margin-left: 6px;
-}
-#header nav li.title {
-  float: right;
-  margin-right: 10px;
-  font-size: 11px;
+
+  nav {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 0 10px;
+    background: blue;
+    margin: 6px auto;
+
+    ul, h3 {
+      margin: 0px;
+      padding: 0px;
+      display: inline;
+    }
+
+    h3 { text-transform: uppercase; }
+
+    .downloads {
+      float: right;
+      margin-left: 6px;
+    }
+
+    .green-button {
+      font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      list-style: none;
+      display: inline;
+      color: white;
+      line-height: 50px;
+      text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+      font-size: 14px;
+
+      a {
+        color: white;
+        border: 1px solid #5d910b;
+        background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #93bd20), color-stop(100%, #659e10));
+        background: -webkit-linear-gradient(#93bd20, #659e10);
+        background: -moz-linear-gradient(#93bd20, #659e10);
+        background: -o-linear-gradient(#93bd20, #659e10);
+        background: -ms-linear-gradient(#93bd20, #659e10);
+        background: linear-gradient(#93bd20, #659e10);
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        -o-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -khtml-border-radius: 2px;
+        border-radius: 2px;
+        -moz-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
+        -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
+        -o-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
+        box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0px 3px 7px rgba(0, 0, 0, 0.7);
+        background-color: #93bd20;
+        padding: 10px 12px;
+        margin-top: 6px;
+        line-height: 14px;
+        font-size: 14px;
+        display: inline-block;
+        text-align: center;
+
+        &:hover {
+          background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #749619), color-stop(100%, #527f0e));
+          background: -webkit-linear-gradient(#749619, #527f0e);
+          background: -moz-linear-gradient(#749619, #527f0e);
+          background: -o-linear-gradient(#749619, #527f0e);
+          background: -ms-linear-gradient(#749619, #527f0e);
+          background: linear-gradient(#749619, #527f0e);
+          background-color: #659e10;
+          border: 1px solid #527f0e;
+          -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
+          -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
+          -o-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
+          box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 0px rgba(0, 0, 0, 0);
+        }
+      }
+
+      &.fork {
+        float: left;
+        margin-left: 0px;
+      }
+
+      &.title {
+        float: right;
+        margin-right: 10px;
+        font-size: 11px;
+      }
+    }
+  }
 }
 
-section {
+main {
   max-width: 650px;
   padding: 30px 0px 50px 0px;
   margin: 20px 0;
   margin-top: 70px;
+
+  #title {
+    border: 0;
+    outline: none;
+    margin: 0 0 50px 0;
+    padding: 0 0 5px 0;
+
+    h1 {
+      font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      font-size: 40px;
+      text-align: center;
+      line-height: 36px;
+    }
+
+    p {
+      color: #d7cfbe;
+      font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .credits {
+      font-size: 11px;
+      font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: normal;
+      color: #696969;
+      margin-top: -10px;
+
+      &.left { float: left; }
+
+      &.right { float: right; }
+    }
+
+    #home-link-box {
+      @include clearfix;
+
+      font-style: italic;
+
+      p {
+        font-size: 1.2em;
+        float: left;
+        margin-bottom: 10px;
+      }
+
+      .home-link {
+        @include nav-link($fa-var-home);
+        font-size: 1.2em;
+
+        color: #e8e8e8;
+        &:hover { color: #e8e8e8; }
+      }
+    }
+  }
 }
-section #title {
-  border: 0;
-  outline: none;
-  margin: 0 0 50px 0;
-  padding: 0 0 5px 0;
+
+article li {
+  h3 {
+    margin-bottom: 0;
+  }
+
+  margin-bottom: 0.5em;
 }
-section #title h1 {
-  font-family: 'OpenSansLight', "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: normal;
-  font-size: 40px;
-  text-align: center;
-  line-height: 36px;
+
+.doc-nav {
+  @include clearfix;
+
+  margin-top: 25px;
+  line-height: 1em;
+
+  &.top {
+    margin-top: -60px;
+    margin-bottom: 30px;
+  }
+
+  .next-page {
+    @include nav-link($fa-var-arrow-right);
+    font-size: 24px;
+    float: right;
+  }
+
+  .prev-page {
+    @include nav-link($fa-var-arrow-left);
+    font-size: 24px;
+    float: left;
+  }
 }
-section #title p {
-  color: #d7cfbe;
-  font-family: 'OpenSansLight', "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: normal;
-  font-size: 18px;
-  text-align: center;
+
+
+#main-content {
+  nav, section {
+    margin-bottom: 40px;
+  }
+
+  .toc > ol {
+    list-style-type: arabic;
+  }
+
+  section {
+    &:not(:last-child) {
+      border-bottom: 1px #434343 dashed;
+    }
+  }
 }
-section #title .credits {
-  font-size: 11px;
-  font-family: 'OpenSansRegular', "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: normal;
-  color: #696969;
-  margin-top: -10px;
-}
-section #title .credits.left {
-  float: left;
-}
-section #title .credits.right {
-  float: right;
-}
+
 
 @media print, screen and (max-width: 720px) {
   #title .credits {
@@ -833,26 +882,22 @@ section #title .credits.right {
     width: 100%;
     line-height: 30px;
     text-align: center;
-  }
-  #title .credits .left {
-    float: none;
-    display: block;
-  }
-  #title .credits .right {
-    float: none;
-    display: block;
+
+    .left, .right {
+      float: none;
+      display: block;
+    }
   }
 }
+
 @media print, screen and (max-width: 480px) {
   #header {
     margin-top: -20px;
+
+    nav { display: none; }
   }
 
-  section {
+  main {
     margin-top: 40px;
-  }
-
-  nav {
-    display: none;
   }
 }
