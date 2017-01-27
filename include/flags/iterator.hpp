@@ -55,7 +55,7 @@ public:
 
 
 private:
-  template <class E_> friend class flags;
+  template <class E_> friend struct flags;
 
   using impl_type = typename flags_type::impl_type;
 
