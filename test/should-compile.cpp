@@ -145,3 +145,9 @@ constexpr bool cf1 = ec1.empty();
 constexpr Enums::size_type cf2 = ec1.max_size();
 constexpr Enums::iterator cf3 = ec1.find(Enum::One);
 constexpr Enums::size_type cf4 = ec1.count(Enum::One);
+
+// non-int underlying type with bitwise operators
+constexpr SmallEnums s1(SmallEnum::SmallOne);
+constexpr auto s2 = s1 | s1;
+constexpr auto s3 = s1 & s1;
+constexpr auto s4 = s1 ^ s1;
