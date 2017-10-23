@@ -19,7 +19,7 @@ constexpr struct empty_t {
 } empty;
 
 
-template <class E> struct flags {
+template <class E> class flags {
 public:
   static_assert(is_flags<E>::value,
                 "flags::flags is disallowed for this type; "

@@ -2,7 +2,7 @@
 
 
 void check() {
-  const Enums es1;
+  const auto es1 = Enums{};
   Enum arr[] = {Enum::One};
   es1.erase(arr);
 }

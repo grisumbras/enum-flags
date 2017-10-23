@@ -145,3 +145,13 @@ constexpr bool cf1 = ec1.empty();
 constexpr Enums::size_type cf2 = ec1.max_size();
 constexpr Enums::iterator cf3 = ec1.find(Enum::One);
 constexpr Enums::size_type cf4 = ec1.count(Enum::One);
+
+
+template <class... Ts> void ignore_variables(Ts&&...) {}
+
+void do_ignore_variables() {
+  ignore_variables(
+    vc1, vc2, l1, l2, l3, l4, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11,
+    b12, b13, cv1, cf1, cf2, cf3, cf4
+  );
+}

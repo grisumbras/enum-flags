@@ -38,7 +38,7 @@ public:
   }
 
 
-  constexpr reference operator*() noexcept {
+  constexpr reference operator*() const noexcept {
     return static_cast<value_type>(mask_);
   }
 
