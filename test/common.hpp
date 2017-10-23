@@ -11,4 +11,10 @@ ALLOW_FLAGS_FOR_ENUM(Enum)
 using Enums = flags::flags<Enum>;
 
 
+enum class SmallEnum : unsigned char {SmallOne = 1, SmallTwo = 2, SmallFour = 4, SmallEight = 8};
+ALLOW_FLAGS_FOR_ENUM(SmallEnum)
+
+using SmallEnums = flags::flags<SmallEnum>;
+
+
 #endif // ENUM_CLASS_TEST_COMMON_HPP

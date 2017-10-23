@@ -140,15 +140,15 @@ public:
   }
 
   friend constexpr flags operator|(flags f1, flags f2) noexcept {
-    return flags{f1.val_ | f2.val_};
+    return flags{static_cast<impl_type>(f1.val_ | f2.val_)};
   }
 
   friend constexpr flags operator&(flags f1, flags f2) noexcept {
-    return flags{f1.val_ & f2.val_};
+    return flags{static_cast<impl_type>(f1.val_ & f2.val_)};
   }
 
   friend  constexpr flags operator^(flags f1, flags f2) noexcept {
-    return flags{f1.val_ ^ f2.val_};
+    return flags{static_cast<impl_type>(f1.val_ ^ f2.val_)};
   }
 
 

@@ -147,11 +147,18 @@ constexpr Enums::iterator cf3 = ec1.find(Enum::One);
 constexpr Enums::size_type cf4 = ec1.count(Enum::One);
 
 
+// non-int underlying type with bitwise operators
+constexpr SmallEnums s1(SmallEnum::SmallOne);
+constexpr auto s2 = s1 | s1;
+constexpr auto s3 = s1 & s1;
+constexpr auto s4 = s1 ^ s1;
+
+
 template <class... Ts> void ignore_variables(Ts&&...) {}
 
 void do_ignore_variables() {
   ignore_variables(
     vc1, vc2, l1, l2, l3, l4, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11,
-    b12, b13, cv1, cf1, cf2, cf3, cf4
+    b12, b13, cv1, cf1, cf2, cf3, cf4, s2, s3, s4
   );
 }
