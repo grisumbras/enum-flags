@@ -15,7 +15,7 @@ namespace flags {
 
 
 constexpr struct empty_t {
-  constexpr empty_t() noexcept {}
+  constexpr empty_t() noexcept = default;
 } empty;
 
 
@@ -164,11 +164,11 @@ public:
   }
 
 
-  constexpr explicit operator std::bitset<bit_size()>() const noexcept {
+  constexpr explicit operator std::bitset<flags<E>::bit_size()>() const noexcept {
     return to_bitset();
   }
 
-  constexpr std::bitset<bit_size()> to_bitset() const noexcept {
+  constexpr std::bitset<flags<E>::bit_size()> to_bitset() const noexcept {
     return {val_};
   }
 
