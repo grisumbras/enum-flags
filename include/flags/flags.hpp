@@ -305,5 +305,12 @@ constexpr auto operator^(E e1, E e2) noexcept
   return flags::flags<E>(e1) ^ e2;
 }
 
+template 
+constexpr auto operator~(E e1) noexcept
+-> typename std::enable_if<flags::is_flags::value,
+                           flags::flags>::type{
+  return ~flags::flags(e1);
+}
+
 
 #endif // ENUM_CLASS_FLAGS_HPP
