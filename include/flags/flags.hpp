@@ -93,7 +93,7 @@ public:
   { insert(b, e); }
 
 
-  constexpr explicit operator bool() const noexcept { return val_; }
+  constexpr explicit operator bool() const noexcept { return val_ != 0; }
 
   constexpr bool operator!() const noexcept { return !val_; }
 
