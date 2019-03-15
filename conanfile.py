@@ -30,7 +30,7 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
 
     def build_requirements(self):
         if self.develop:
-            self.build_requires("boost_test/[>1.60]@bincrafters/stable")
+            self.build_requires("boost_core/[>1.60]@bincrafters/stable")
 
     def package_info(self):
         self.info.header_only()
