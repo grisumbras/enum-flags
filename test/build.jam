@@ -10,16 +10,27 @@ project flags_tests
   ;
 
 
-lib boost_utf
-  :
-  : <name>boost_unit_test_framework
-  ;
-
-
 unit-test main-test
-  : main-test.cpp boost_utf
-  : <define>BOOST_TEST_DYN_LINK
-    <define>BOOST_TEST_MODULE=enum_flags
+  : main-test.cpp
+    /boost_test//libs
+    /boost_config//libs
+    /boost_preprocessor//libs
+    /boost_type_traits//libs
+    /boost_utility//libs
+    /boost_core//libs
+    /boost_smart_ptr//libs
+    /boost_assert//libs
+    /boost_throw_exception//libs
+    /boost_predef//libs
+    /boost_static_assert//libs
+    /boost_mpl//libs
+    /boost_numeric_conversion//libs
+    /boost_function//libs
+    /boost_integer//libs
+    /boost_type_index//libs
+    /boost_container_hash//libs
+    /boost_bind//libs
+  : <define>BOOST_TEST_MODULE=enum_flags
   ;
 
 

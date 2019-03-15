@@ -18,4 +18,19 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     url = "https://github.com/grisumbras/enum-flags"
     homepage = url
 
+    settings = "os", "compiler", "build_type", "arch", "cppstd"
     no_copy_source = True
+
+    def config_options(self):
+        if not self.develop:
+            del self.settings.os
+            del self.settings.compiler
+            del self.settings.build_type
+            del self.settings.arch
+
+    def build_requirements(self):
+        if self.develop:
+            self.build_requires("boost_test/[>1.60]@bincrafters/stable")
+
+    def package_info(self):
+        self.info.header_only()
