@@ -4,22 +4,22 @@ import testing ;
 project flags_tests
   : requirements <warnings>all
                  <warnings-as-errors>on
-                 <include>../include/
   : default-build <variant>release
   ;
 
 
 unit-test main-test
   : main-test.cpp
+    /enum-flags//enum-flags
     /boost_config//libs
     /boost_core//libs
     /boost_assert//libs
   ;
 
 
-compile should-compile.cpp ;
+compile should-compile.cpp /enum-flags//enum-flags ;
 
 
 for src in [ glob shouldnt-compile/*.cpp ] {
-  compile-fail $(src) ;
+  compile-fail $(src) /enum-flags//enum-flags ;
 }

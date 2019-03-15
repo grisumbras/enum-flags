@@ -5,6 +5,9 @@ import path ;
 project enum-flags ;
 
 
+alias enum-flags : usage-requirements <include>include ;
+
+
 package.install headers enum-flags
   : <install-source-root>include
   :
