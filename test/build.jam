@@ -1,25 +1,24 @@
 import testing ;
 
 
-project flags_tests
+project
   : requirements <warnings>all
                  <warnings-as-errors>on
   : default-build <variant>release
   ;
 
 
-unit-test main-test
-  : main-test.cpp
-    /enum-flags//enum-flags
+run main-test.cpp
+    /enum-flags//libs
     /boost_config//libs
     /boost_core//libs
     /boost_assert//libs
   ;
 
 
-compile should-compile.cpp /enum-flags//enum-flags ;
+compile should-compile.cpp /enum-flags//libs ;
 
 
 for src in [ glob shouldnt-compile/*.cpp ] {
-  compile-fail $(src) /enum-flags//enum-flags ;
+  compile-fail $(src) /enum-flags//libs ;
 }

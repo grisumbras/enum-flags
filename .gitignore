@@ -26,3 +26,4 @@ test/bin
 
 # Conan artificats
 /tmp
+test/build

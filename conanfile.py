@@ -1,11 +1,10 @@
-import os
 from conans import (
     ConanFile,
     python_requires,
 )
 
 
-b2 = python_requires("b2-helper/0.2.0@grisumbras/dev")
+b2 = python_requires("b2-helper/0.2.0@grisumbras/testing")
 
 
 class EnumFlagsConan(b2.B2.Mixin, ConanFile):
@@ -18,19 +17,13 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     url = "https://github.com/grisumbras/enum-flags"
     homepage = url
 
-    settings = "os", "compiler", "build_type", "arch", "cppstd"
+    exports_sources = "jamroot.jam", "build.jam", "*.hpp", "*.cpp", "LICENSE*",
     no_copy_source = True
+    build_requires = "boost_build/[>=1.68]@bincrafters/stable"
 
-    def config_options(self):
-        if not self.develop:
-            del self.settings.os
-            del self.settings.compiler
-            del self.settings.build_type
-            del self.settings.arch
-
-    def build_requirements(self):
-        if self.develop:
-            self.build_requires("boost_core/[>1.60]@bincrafters/stable")
+    def b2_setup_builder(self, builder):
+        print(self.source_folder, self.build_folder)
+        return builder
 
     def package_info(self):
         self.info.header_only()
