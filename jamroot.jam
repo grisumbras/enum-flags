@@ -1,0 +1,22 @@
+import package ;
+import path ;
+
+
+project enum-flags ;
+
+
+alias libs : usage-requirements <include>include ;
+
+
+package.install headers enum-flags
+  : <install-source-root>include
+  :
+  :
+  : [ path.glob-tree include : *.hpp ]
+  ;
+explicit headers ;
+
+package.install-data license : enum-flags : LICENSE ;
+
+alias install : headers license ;
+explicit install headers license ;
