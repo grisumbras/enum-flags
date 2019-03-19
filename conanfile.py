@@ -21,9 +21,5 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     no_copy_source = True
     build_requires = "boost_build/[>=1.68]@bincrafters/stable"
 
-    def b2_setup_builder(self, builder):
-        print(self.source_folder, self.build_folder)
-        return builder
-
     def package_info(self):
         self.info.header_only()
