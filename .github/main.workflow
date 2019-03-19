@@ -1,6 +1,6 @@
 workflow "CI" {
   on = "push"
-  resolves = "build"
+  resolves = "publish"
 }
 
 
@@ -23,4 +23,17 @@ action "build" {
     CONAN_UPLOAD = "https://api.bintray.com/conan/grisumbras/conan"
     CONAN_USERNAME = "grisumbras"
   }
+}
+
+
+action "filter-ref" {
+  needs = "build"
+  uses = "actions/bin/filter@master"
+  args = "branch master || tag"
+}
+
+action "publish" {
+  uses = "./.github/conan-upload/"
+  needs = "filter-ref"
+  secrets = ["CONAN_LOGIN_USERNAME", "CONAN_PASSWORD"]
 }
