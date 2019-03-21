@@ -4,6 +4,8 @@ import path ;
 
 project enum-flags ;
 
+constant VERSION : 0.1.0 ;
+
 
 alias libs : usage-requirements <include>include ;
 

@@ -1,15 +1,26 @@
 from conans import (
     ConanFile,
     python_requires,
+    tools,
 )
+import re
 
 
 b2 = python_requires("b2-helper/0.2.0@grisumbras/testing")
 
 
+def get_version():
+    try:
+        content = tools.load("jamroot.jam")
+        match = re.search(r"constant\s*VERSION\s*:\s*(\S+)\s*;", content)
+        return match.group(1)
+    except:
+        pass
+
+
 class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     name = "enum-flags"
-    version = "0.1.0"
+    version = get_version()
     description = "Bit flags for C++ scoped enums"
     topics = "bit-mask", "bit-flag",
     author = "Dmitry Arkhipov <grisumbras@gmail.com>"
