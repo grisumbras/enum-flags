@@ -3,6 +3,7 @@ from conans import (
     python_requires,
     tools,
 )
+import os
 import re
 
 
@@ -28,9 +29,19 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     url = "https://github.com/grisumbras/enum-flags"
     homepage = url
 
-    exports_sources = "jamroot.jam", "build.jam", "*.hpp", "*.cpp", "LICENSE*",
+    exports_sources = (
+        "jamroot.jam",
+        "*build.jam",
+        "exports/*.jam",
+        "*.hpp",
+        "*.cpp",
+        "LICENSE*",
+    )
     no_copy_source = True
     build_requires = "boost_build/[>=1.68]@bincrafters/stable"
 
     def package_info(self):
         self.info.header_only()
+
+        pkgconfig_dir = os.path.join(self.package_folder, "lib", "pkgconfig")
+        self.env_info.PKG_CONFIG_PATH.append(pkgconfig_dir)

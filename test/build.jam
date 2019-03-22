@@ -1,7 +1,7 @@
 import testing ;
 
 
-project
+project enum-flags-test
   : requirements <warnings>all
                  <warnings-as-errors>on
   : default-build <variant>release
