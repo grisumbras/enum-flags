@@ -45,3 +45,5 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
 
         pkgconfig_dir = os.path.join(self.package_folder, "lib", "pkgconfig")
         self.env_info.PKG_CONFIG_PATH.append(pkgconfig_dir)
+
+        self.env_info.CMAKE_PREFIX_PATH.append(self.package_folder)

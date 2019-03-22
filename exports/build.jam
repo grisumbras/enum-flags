@@ -12,9 +12,16 @@ includedir = [ install-path.includedir $(prefix) ] ;
 make enum-flags.pc : : @write-pc ;
 install install-pc : enum-flags.pc : <location>$(libdir)/pkgconfig ;
 
+make enumflags-config.cmake : : @write-cmake-config ;
+make enumflags-config-version.cmake : : @write-cmake-version ;
+install install-cmake
+  : enumflags-config.cmake
+    enumflags-config-version.cmake
+  : <location>$(libdir)/cmake/enumflags-$(VERSION)
+  ;
 
-alias install : install-pc ;
-explicit install install-pc ;
+alias install : install-pc install-cmake ;
+explicit install install-pc install-cmake ;
 
 
 rule write-pc  ( target : sources * : properties * ) {
@@ -23,6 +30,40 @@ rule write-pc  ( target : sources * : properties * ) {
       "Description: Bit-flags for C++ scoped enums"
       "Version: $(VERSION)"
       "Cflags: -I$(includedir)"
+      ""
+    ;
+}
+
+
+rule write-cmake-config ( target : sources * : properties * ) {
+  write $(target)
+    : "if(TARGET EnumFlags::EnumFlags)"
+      "  return()"
+      "endif()"
+      ""
+      "add_library(EnumFlags::EnumFlags INTERFACE IMPORTED)"
+      "set_target_properties("
+      "  EnumFlags::EnumFlags"
+      "  PROPERTIES INTERFACE_INCLUDE_DIRECTORIES \"$(includedir)\""
+      ")"
+      ""
+    ;
+}
+
+
+rule write-cmake-version ( target : sources * : properties * ) {
+  write $(target)
+    : "set(PACKAGE_VERSION $(VERSION))"
+      ""
+      "if(NOT PACKAGE_FIND_VERSION OR PACKAGE_FIND_VERSION EQUAL $(VERSION))"
+      "  set(PACKAGE_VERSION_EXACT TRUE)"
+      "  set(PACKAGE_VERSION_COMPATIBLE TRUE)"
+      "  set(PACKAGE_VERSION_UNSUITABLE FALSE)"
+      "else()"
+      "  set(PACKAGE_VERSION_EXACT FALSE)"
+      "  set(PACKAGE_VERSION_COMPATIBLE FALSE)"
+      "  set(PACKAGE_VERSION_UNSUITABLE TRUE)"
+      "endif()"
       ""
     ;
 }
