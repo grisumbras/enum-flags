@@ -4,6 +4,8 @@ import path ;
 
 project enum-flags ;
 
+constant VERSION : 0.1.0 ;
+
 
 alias libs : usage-requirements <include>include ;
 
@@ -18,5 +20,5 @@ explicit headers ;
 
 package.install-data license : enum-flags : LICENSE ;
 
-alias install : headers license ;
+alias install : headers license exports//install ;
 explicit install headers license ;
