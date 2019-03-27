@@ -34,7 +34,7 @@ action "filter-not-publish" {
 
 
 action "store-env" {
-  uses = "./.github/store-env/"
+  uses = "grisumbras/store-env@master"
   env = {
     CONAN_CHANNEL = "testing"
     CONAN_STABLE_BRANCH_PATTERN = "\\d+\\.\\d+(\\.\\d+[-\\w\\.]*)?"
