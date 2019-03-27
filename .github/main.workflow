@@ -5,7 +5,7 @@ workflow "Publish" {
 
 action "publish" {
   needs = ["filter-publish", "store-env"]
-  uses = "./.github/cpt/"
+  uses = "grisumbras/conan-actions/cpt@master"
   secrets = ["CONAN_LOGIN_USERNAME", "CONAN_PASSWORD"]
 }
 
@@ -17,7 +17,7 @@ workflow "Build" {
 
 action "build" {
   needs = ["filter-not-publish", "store-env"]
-  uses = "./.github/cpt/"
+  uses = "grisumbras/conan-actions/cpt@master"
 }
 
 
