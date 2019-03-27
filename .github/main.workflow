@@ -1,21 +1,40 @@
-workflow "CI" {
+workflow "Publish" {
   on = "push"
   resolves = "publish"
 }
 
-
-action "remotes" {
-  uses = "./.github/conan-remotes/"
-  env = {
-    CONAN_REMOTES = "https://api.bintray.com/conan/bincrafters/public-conan"
-    CONAN_UPLOAD = "https://api.bintray.com/conan/grisumbras/conan"
-  }
+action "publish" {
+  needs = ["filter-publish", "store-env"]
+  uses = "./.github/cpt/"
+  secrets = ["CONAN_LOGIN_USERNAME", "CONAN_PASSWORD"]
 }
 
 
+workflow "Build" {
+  on = "push"
+  resolves = "build"
+}
+
 action "build" {
-  needs = "remotes"
+  needs = ["filter-not-publish", "store-env"]
   uses = "./.github/cpt/"
+}
+
+
+action "filter-publish" {
+  uses = "actions/bin/filter@master"
+  args = "branch master || tag"
+}
+
+
+action "filter-not-publish" {
+  uses = "actions/bin/filter@master"
+  args = "not branch master && not tag"
+}
+
+
+action "store-env" {
+  uses = "./.github/store-env/"
   env = {
     CONAN_CHANNEL = "testing"
     CONAN_STABLE_BRANCH_PATTERN = "\\d+\\.\\d+(\\.\\d+[-\\w\\.]*)?"
@@ -24,17 +43,4 @@ action "build" {
     CONAN_UPLOAD = "https://api.bintray.com/conan/grisumbras/conan"
     CONAN_USERNAME = "grisumbras"
   }
-}
-
-
-action "filter-ref" {
-  needs = "build"
-  uses = "actions/bin/filter@master"
-  args = "branch master || tag"
-}
-
-action "publish" {
-  uses = "./.github/conan-upload/"
-  needs = "filter-ref"
-  secrets = ["CONAN_LOGIN_USERNAME", "CONAN_PASSWORD"]
 }
