@@ -35,7 +35,7 @@ Use inside `conanfile.txt`:
 
 ```ini
 [requires]
-enum-flags/[>0.1]@grisumbras/testing
+enum-flags/[>=0.1]@grisumbras/testing
 
 ```
 
