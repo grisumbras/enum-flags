@@ -1,0 +1,54 @@
+<%#encoding:UTF-8%><!DOCTYPE html><%
+require "erb"
+
+def include_file file
+  path = (attr 'layout-include', '.') + '/' + file
+  content = File.read(File.expand_path(path))
+  p = ERB.new(content)
+  p.result(binding)
+end
+%>
+<html<%= (attr? :nolang) ? nil : %( lang="#{attr :lang, 'en'}") %>>
+<head>
+  <%= include_file 'head.html.erb' %>
+</head>
+<body<%= @id && %( id="#{@id}")%>>
+  <%= include_file 'header.html.erb' %>
+  <div class="wrapper">
+    <main>
+      <article>
+        <%= include_file 'main_title.html.erb' %>
+        <nav class="doc-nav top"><%
+          if attr? 'prev-document' %>
+            <a class="prev-page" href="{{ site.baseurl }}{{ page.prev }}">
+              <i class="icon"></i>
+              <span class="text">Back</span>
+            </a>
+          <% end
+          if attr? 'next-document' %>
+            <a class="next-page" href="{{ site.baseurl }}{{ page.next }}">
+              <i class="icon"></i>
+              <span class="text">Next</span>
+            </a>
+          <% end %>
+        </nav>
+        <div id="main-content">
+          <%= content %>
+        </div>
+      </article>
+      <nav class="doc-nav"><%
+        if attr? 'prev-document' %>
+          <a class="prev-page" href="{{ site.baseurl }}{{ page.prev }}">
+            <i class="icon"></i>
+            <span class="text">Back</span>
+          </a>
+          <a class="next-page" href="{{ site.baseurl }}{{ page.next }}">
+            <i class="icon"></i>
+            <span class="text">Next</span>
+          </a>
+        <% end %>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

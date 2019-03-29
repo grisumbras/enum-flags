@@ -1,0 +1,26 @@
+<header id="title"><%
+    p = attr 'project-title'
+    t = doctitle(:sanitize => true, :use_fallback => true)
+    if t != p %>
+    <div id="home-link-box">
+      <p>
+        <a href="<%= attr 'base-url', '' %>" class="home-link">
+          <i class="icon"></i> <%=p%>
+        </a>
+      </p>
+    </div>
+  <% end %>
+  <h1><%=t%></h1><%
+  if attr? 'subtitle' %>
+    <p><%= attr 'subtitle' %></p>
+  <% end %>
+  <hr>
+  <span class="credits left">
+    Project maintained by
+    <a href="https://github.com/grisumbras">grisumbras</a>
+  </span>
+  <span class="credits right">
+    Hosted on GitHub Pages &mdash;
+    Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a>
+  </span>
+</header>

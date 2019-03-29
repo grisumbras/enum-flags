@@ -1,0 +1,28 @@
+<meta charset="<%= attr :encoding, 'UTF-8' %>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/><%
+  p = attr 'project-title'
+  t = doctitle(:sanitize => true, :use_fallback => true)
+  if t = p
+    t = 'Home'
+  end
+%>
+<title><%=p%> | <%=t%></title><%
+  [:description, :keywords, :author, :copyright].each do |key|
+    if attr? key %>
+<meta name="<%= key %>" content="<%= attr key %>"><%
+    end
+  end %>
+
+<!-- <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html','' }}"/> -->
+<!-- {%if page.next %} -->
+<!--   <link rel="next" href="{{ site.url }}{{ site.baseurl }}{{ page.next | replace:'index.html','' }}"/> -->
+<!-- {% endif %} -->
+<!-- {%if page.prev %} -->
+<!--   <link rel="prev" href="{{ site.url }}{{ site.baseurl }}{{ page.prev | replace:'index.html','' }}"/> -->
+<!-- {% endif %} -->
+
+<link rel="stylesheet" href="<%= attr 'base-url', '' %>/<%= attr 'stylesheet' %>">
+<link rel="stylesheet" href="<%= attr 'base-url', '' %>/assets/css/pygments-<%= attr 'pygments-style' %>.css"/>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script> -->
+<!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,400italic,700,700italic,300,600,600italic"> -->

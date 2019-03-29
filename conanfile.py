@@ -29,16 +29,34 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     url = "https://github.com/grisumbras/enum-flags"
     homepage = url
 
+    options = {"with_docs": [False, True]}
+    default_options = {"with_docs": False}
+
     exports_sources = (
         "jamroot.jam",
         "*build.jam",
-        "exports/*.jam",
         "*.hpp",
         "*.cpp",
         "LICENSE*",
+        "*.adoc",
+        "*.scss",
+        "*.erb",
+        "*.png",
+        "*.gif",
     )
     no_copy_source = True
-    build_requires = "boost_build/[>=1.68]@bincrafters/stable"
+    build_requires = (
+        "boost_build/[>=1.68]@bincrafters/stable",
+        "b2-tools/[>=0.1]@grisumbras/testing",
+    )
+
+    def b2_setup_builder(self, builder):
+        if self.options.with_docs:
+            builder.options.with_docs = True
+            builder.using("asciidoctor")
+            builder.using("sass")
+        builder.properties.install_prefix = self.package_folder
+        return builder
 
     def package_info(self):
         self.info.header_only()

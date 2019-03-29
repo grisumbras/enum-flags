@@ -1,50 +1,62 @@
-import install-path ;
 import make ;
+import path ;
 import print ;
+import property-set ;
+import install-extra : install ;
 
 
-prefix = [ install-path.prefix enum-flags ] ;
-execprefix = [ install-path.exec-prefix $(prefix) ] ;
-libdir = [ install-path.libdir $(execprefix) ] ;
-includedir = [ install-path.includedir $(prefix) ] ;
+
+local installed ;
 
 
 make enum-flags.pc : : @write-pc ;
-install install-pc : enum-flags.pc : <location>$(libdir)/pkgconfig ;
+installed += [ install (libdir)/pkgconfig : enum-flags.pc ] ;
 
 make enumflags-config.cmake : : @write-cmake-config ;
 make enumflags-config-version.cmake : : @write-cmake-version ;
-install install-cmake
+installed +=
+  [ install (datarootdir)/cmake/enumflags-$(VERSION)
   : enumflags-config.cmake
     enumflags-config-version.cmake
-  : <location>$(libdir)/cmake/enumflags-$(VERSION)
-  ;
+  ] ;
 
-alias install : install-pc install-cmake ;
-explicit install install-pc install-cmake ;
+alias install : $(installed) ;
+explicit install ;
 
 
 rule write-pc  ( target : sources * : properties * ) {
+  local dirs = [ installdirs prefix : $(properties) ] ;
   write $(target)
-    : "Name: enum-flags"
+    : "prefix=$(dirs[2])"
+      "includedir=${prefix}/$(dirs[1])"
+      ""
+      "Name: enum-flags"
       "Description: Bit-flags for C++ scoped enums"
       "Version: $(VERSION)"
-      "Cflags: -I$(includedir)"
+      "Cflags: -I${includedir}"
       ""
     ;
 }
 
 
 rule write-cmake-config ( target : sources * : properties * ) {
+  local dirs = [ installdirs datarootdir : $(properties) ] ;
+  local cmakedir = [ path.join $(dirs[2]) cmake/enumflags-$(VERSION) ] ;
+  local to-prefix = [ path.reverse $(cmakedir) ] ;
   write $(target)
     : "if(TARGET EnumFlags::EnumFlags)"
       "  return()"
       "endif()"
       ""
+      "get_filename_component("
+      "  _IMPORT_PREFIX \"${CMAKE_CURRENT_LIST_DIR}/$(to-prefix)\"  ABSOLUTE"
+      ")"
+      ""
       "add_library(EnumFlags::EnumFlags INTERFACE IMPORTED)"
       "set_target_properties("
       "  EnumFlags::EnumFlags"
-      "  PROPERTIES INTERFACE_INCLUDE_DIRECTORIES \"$(includedir)\""
+      "  PROPERTIES"
+      "    INTERFACE_INCLUDE_DIRECTORIES \"${_IMPORT_PREFIX}/$(dirs[1])\""
       ")"
       ""
     ;
@@ -55,14 +67,12 @@ rule write-cmake-version ( target : sources * : properties * ) {
   write $(target)
     : "set(PACKAGE_VERSION $(VERSION))"
       ""
-      "if(NOT PACKAGE_FIND_VERSION OR PACKAGE_FIND_VERSION EQUAL $(VERSION))"
+      "if(NOT PACKAGE_FIND_VERSION OR PACKAGE_FIND_VERSION STREQUAL $(VERSION))"
       "  set(PACKAGE_VERSION_EXACT TRUE)"
       "  set(PACKAGE_VERSION_COMPATIBLE TRUE)"
-      "  set(PACKAGE_VERSION_UNSUITABLE FALSE)"
       "else()"
       "  set(PACKAGE_VERSION_EXACT FALSE)"
       "  set(PACKAGE_VERSION_COMPATIBLE FALSE)"
-      "  set(PACKAGE_VERSION_UNSUITABLE TRUE)"
       "endif()"
       ""
     ;
@@ -71,5 +81,13 @@ rule write-cmake-version ( target : sources * : properties * ) {
 
 local rule write ( target : content * ) {
   print.output $(target) ;
-  print.text $(content) ;
+  print.text $(content) : overwrite ;
+}
+
+
+local rule installdirs ( dir : properties * ) {
+  local ps = [ property-set.create $(properties) ] ;
+  local includedir = [ install-extra.get-dir includedir : $(ps) : relative ] ;
+  local otherdir = [ install-extra.get-dir $(dir) : $(ps) : relative ] ;
+  return $(includedir) $(otherdir) ;
 }

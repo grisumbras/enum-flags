@@ -1,0 +1,98 @@
+import asciidoctor ;
+import link ;
+import make ;
+import sass ;
+import sequence ;
+import sibling : sibling ;
+import testing ;
+import install-extra : install ;
+
+
+path-constant HERE : . ;
+
+
+css theme
+  : assets/css/theme.scss
+  : usage-requirements <asciidoctor-attribute>stylesheet=assets/css/theme.css
+  ;
+
+
+local rule highlight-theme ( name ) {
+  local helper = $(name)-hl ;
+  local helper-source = $(helper:S=.adoc) ;
+
+  make $(helper-source) : : @link.touch ;
+
+  html $(helper)
+    : $(helper-source)
+    : <asciidoctor-attribute>linkcss
+      <asciidoctor-attribute>source-highlighter=pygments
+      <asciidoctor-attribute>pygments-css="class"
+      <asciidoctor-attribute>pygments-linenums-mode=inline
+      <asciidoctor-attribute>pygments-style=$(name)
+    ;
+
+  explicit $(helper-source) $(helper) ;
+
+  local target = pygments-$(name).css ;
+  sibling $(target)
+    : $(helper)
+    : usage-requirements
+      <asciidoctor-attribute>source-highlighter=pygments
+      <asciidoctor-attribute>pygments-linenums-mode=inline
+      <asciidoctor-attribute>pygments-style=$(name)
+    ;
+  return $(target) ;
+}
+
+local hl-theme = [ highlight-theme paraiso-dark ] ;
+# monokai
+# friendly
+
+
+local rule templates-dir ( path : includes ? ) {
+  local templates = [ glob-tree-ex $(path) : * ] ;
+  if $(includes) { templates += [ glob-tree-ex $(includes) : * ] ; }
+
+  return
+    <flags>"-T $(path)"
+    <dependency>$(templates)
+    <asciidoctor-attribute>layout-include=$(includes)
+    ;
+}
+
+
+alias common-attributes
+  : sources
+    theme
+    $(hl-theme)
+  : usage-requirements
+    <asciidoctor-attribute>nofooter
+    <asciidoctor-attribute>source-highlighter=pygments
+    <asciidoctor-attribute>pygments-linenums-mode=inline
+
+    <asciidoctor-attribute>icons=font
+
+    [ templates-dir templates : include ]
+
+    <asciidoctor-attribute>base-url="$(doc-prefix)"
+    <asciidoctor-attribute>project-title=enum-flags
+    <asciidoctor-attribute>project-repository="http://github.com/grisumbras/enum-flags"
+  ;
+
+
+rule try-example ( source ) { return [ run $(source) /enum-flags//libs ] ; }
+alias examples : [ sequence.transform try-example : [ glob examples/*.cpp ] ] ;
+
+
+html index : index.adoc common-attributes examples theme ;
+
+
+alias install
+  : [ install (htmldir) : index ]
+    [ install (htmldir)/assets/css  : theme $(hl-theme) ]
+    [ install (htmldir)/assets/img
+    : [ glob assets/img/*.png ] [ glob assets/img/*.gif ]
+    ]
+  ;
+explicit install ;

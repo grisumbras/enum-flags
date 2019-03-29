@@ -1,0 +1,15 @@
+<header id="header">
+  <nav>
+    <div class="fork green-button">
+      <a href="<%= attr 'project-repository' %>">View on GitHub</a>
+    </div>
+    <div class="downloads">
+      <h3>Downloads</h3>
+      <ul><%[:zip, :tar].each do |type| %>
+        <li class="green-button">
+          <a href="<%= attr 'project-repository' %>/<%=type%>ball/master"><%=type.upcase%></a>
+        </li>
+      <% end %></ul>
+    </div>
+  </nav>
+</header>
