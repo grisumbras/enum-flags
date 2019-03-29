@@ -1,0 +1,39 @@
+import path ;
+
+using asciidoctor ;
+
+
+project enum-flags-doc ;
+
+path-constant HERE : . ;
+
+
+local rule templates-dir ( path ) {
+  path = [ path.root $(path) $(HERE) ] ;
+  local files = [ glob $(path)/* ] ;
+  return <flags>"-T $(path)" <dependency>$(files) ;
+}
+
+
+alias common-attributes
+  : usage-requirements
+    <asciidoctor-attribute>nofooter
+    <asciidoctor-attribute>source-highlighter=pygments
+    <asciidoctor-attribute>pygments-linenums-mode=inline
+    # <asciidoctor-attribute>pygments-css
+
+    # <asciidoctor-attribute>pygments-style=monokai
+    <asciidoctor-attribute>pygments-style=paraiso-dark
+
+    # <asciidoctor-attribute>pygments-style=friendly
+
+    <asciidoctor-attribute>icons=font
+    # <asciidoctor-attribute>stylesdir=styles
+
+    [ templates-dir templates ]
+  ;
+
+
+html index : index.adoc common-attributes ;
+
+install install : index ;
