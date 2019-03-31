@@ -1,0 +1,21 @@
+= enum-flags
+
+*enum-flags* is a C++ library that allows you to convert scoped enums into bit
+flags. +
+You can use it as simple as this:
+
+[source, c++]
+----
+include::examples/example0.cpp[]
+----
+
+== Documentation
+
+* *link:overview/index.html[Overview]* +
+  An overview of the features and the design.
+
+* *link:tutorial/index.html[Tutorial]* +
+  A tutorial that shows how to use the library.
+
+* *link:reference/index.html[Reference]* +
+  API reference.

@@ -20,5 +20,5 @@ explicit headers ;
 
 package.install-data license : enum-flags : LICENSE ;
 
-alias install : headers license exports//install ;
+alias install : headers license exports//install doc//install ;
 explicit install headers license ;
