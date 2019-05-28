@@ -17,7 +17,7 @@ workflow "Build" {
 
 action "build" {
   needs = ["filter-not-publish", "store-env"]
-  uses = "grisumbras/conan-actions/cpt@master"
+  uses = "./.github/cpt"
 }
 
 

@@ -1,0 +1,4 @@
+Name: enum-flags
+Description: Bit-flags for C++ scoped enums
+Version: 0.1.0
+Cflags: -I/home/arhipov_d/dev/1/enum-flags/tmp/stage/include
