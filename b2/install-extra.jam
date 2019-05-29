@@ -1,0 +1,239 @@
+# Copyright 2019 Dmitry Arkhipov
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+
+import feature ;
+import param ;
+import path ;
+import project ;
+import targets ;
+
+
+.dirs
+  = exec-prefix bindir sbindir libexecdir datarootdir datadir
+    sysconfdir sharedstatedir localstatedir runstatedir includedir
+    oldincludedir docdir infodir htmldir dvidir pdfdir psdir libdir lispdir
+    localedir mandir
+  ;
+
+
+# features that specify paths to installation prefixes and well-known
+# installation directories
+feature.feature stage-prefix : : free path ;
+feature.feature install-prefix : : free path ;
+for local dir in $(.dirs) { feature.feature install-$(dir) : : free ; }
+
+# feature that specifies the name of the package to which installed files
+# belong
+feature.feature install-package : : free ;
+
+
+
+class install-extra-target-class : install-target-class {
+  import install-extra ;
+
+  # If <location> is not set, sets it based on the project data.
+  rule update-location ( property-set ) {
+    local loc = [ $(property-set).get <location> ] ;
+    if ! $(loc) {
+      # check if installation to a well-known directory was requested
+      local matches = [ MATCH "^\\((.+)\\)(.*)" : $(self.name:G=) ] ;
+      if $(matches) {
+        loc = [ well-known-location  $(matches) : $(property-set) ] ;
+      } else {
+        loc = [ path.root $(self.name) [ $(self.project).get location ] ] ;
+      }
+      property-set = [ $(property-set).add-raw $(loc:G=<location>) ] ;
+    }
+    return $(property-set) ;
+  }
+
+  # Returns location inside a well-known directory
+  local rule well-known-location ( well-known-dir subdir : property-set ) {
+    # at this point subdir is either an empty string or an absolute path, but
+    # we need it to be either an empty string or a relative path
+    if $(subdir) != "" { subdir = [ path.relative $(subdir) / ] ; }
+
+    local prefix
+      = [ install-extra.get-dir $(well-known-dir)
+        : $(property-set)
+        : staged
+        : [ $(self.project).get id ]
+        ] ;
+    return [ path.root $(subdir) $(prefix) ] ;
+  }
+}
+
+
+rule install ( name : sources * : requirements * : default-build * ) {
+  param.handle-named-params
+    sources requirements default-build usage-requirements ;
+
+  local project = [ project.current ] ;
+
+  # Unless the user has explicitly asked us to hardcode dll paths, add
+  # <hardcode-dll-paths>false in requirements, to override default value.
+  if ! <hardcode-dll-paths>true in $(requirements) {
+    requirements += <hardcode-dll-paths>false ;
+  }
+
+  if <tag> in $(requirements:G) {
+    import errors ;
+    errors.user-error
+      The <tag> property is not allowed for the 'install' rule. ;
+  }
+
+  targets.create-metatarget install-extra-target-class
+    : $(project) : $(name) : $(sources) : $(requirements) : $(default-build) ;
+}
+
+
+# Returns the path to the requested well-known directory
+rule get-dir ( well-known-dir : property-set : flags * : project ? ) {
+  local package-name = [ get-package-name $(property-set) : $(project) ] ;
+
+  local relative ;
+  if relative in $(flags)  { relative = relative ; }
+
+  local staged ;
+  if staged in $(flags)  { staged = staged ; }
+
+  return
+    [ get-dir-aux $(well-known-dir)
+    : $(package-name)
+    : $(property-set)
+    : $(relative)
+    : $(staged)
+    ] ;
+}
+
+
+rule get-package-name ( property-set : package ? ) {
+  if ! $(package) {
+    local project = [ project.current ] ;
+    package = [ $(project).get id ] ;
+    if ! $(package) {
+      local root =  [ $(project).get project-root ] ;
+      root = [ path.root $(root) [ path.pwd ] ] ;
+      package = $(root) ;
+    }
+  }
+  return $(package:B) ;
+}
+
+
+rule target-native-path ( path : property-set ) {
+  local os ;
+  switch [ $(property-set).get <target-os> ] {
+  case cygwin : os = CYGWIN ;
+  case vms : os = VMS ;
+  case windows : os = NT ;
+  case * : os = UNIX ;
+  }
+  local native = native-$(os) ;
+
+  return [ path.$(native) $(path) ] ;
+}
+
+
+local rule get-dir-aux
+  ( well-known-dir : package-name : property-set : relative ? : staged ? )
+{
+  local loc ;
+  # We treat the 'prefix' directory in a special way, because it doesn't have
+  # a base directory and it can be overriden by staging prefix.
+  if $(well-known-dir) = prefix {
+    loc
+      = [ get-install-prefix $(package-name) : $(property-set) : $(staged) ] ;
+  } else {
+    # First, try getting the path for requested directory from properties.
+    loc = [ $(property-set).get <install-$(well-known-dir)> ] ;
+
+    local info = [ well-known-default $(well-known-dir) : $(package-name) ] ;
+    # Otherwise, use the default path. In both cases, it could be a
+    # relative path.
+    loc ?= $(info[1]) ;
+
+    # If there is a base directory, we may need to either prepend it to the
+    # result, if we want an absolute path, or remove it from the beginning, if
+    # we want a relative path.
+    if $(info[2]) {
+      local rooted = [ path.is-rooted $(loc) ] ;
+
+      local operation ;
+      if $(rooted) && $(relative) {
+        # We only need to prepend base if the result is relative.
+        operation = relative ;
+      } else if ! ( $(rooted) || $(relative) ) {
+        # We only need to remove base if the result is absolute.
+        operation = root ;
+      }
+
+      if $(operation) {
+        # Always get absolute path to base.
+        local base
+          = [ get-dir-aux $(info[2])
+            : $(package-name)
+            : $(property-set)
+            :
+            : $(staged)
+            ] ;
+        loc = [ path.$(operation) $(loc) $(base) ] ;
+      }
+    }
+  }
+
+  return $(loc) ;
+}
+
+
+# For a given well-known directory returns its base directory and
+# relative path
+local rule well-known-default ( well-known-dir : package-name ) {
+  switch $(well-known-dir) {
+    case exec-prefix : return "" prefix ;
+    case bindir : return bin exec-prefix ;
+    case sbindir : return sbin exec-prefix ;
+    case libexecdir : return libexec exec-prefix ;
+    case libdir : return lib exec-prefix ;
+    case datarootdir : return share prefix ;
+    case datadir : return "" datarootdir ;
+    case sysconfdir : return etc prefix ;
+    case sharedstatedir : return com prefix ;
+    case localstatedir : return var prefix ;
+    case runstatedir : return run localstatedir ;
+    case includedir : return "include" prefix ;
+    case oldincludedir : return /usr/include ;
+    case docdir : return $(package-name:D=doc) datarootdir ;
+    case infodir : return info datarootdir ;
+    case htmldir : return "" docdir ;
+    case dvidir : return "" docdir ;
+    case pdfdir : return "" docdir ;
+    case psdir : return "" docdir ;
+    case lispdir : return emacs/site-lisp datarootdir ;
+    case localedir : return locale datarootdir ;
+    case mandir : return man datarootdir ;
+    case * :
+      import errors ;
+      errors.error
+        $(well-known-dir) is not a well-known installation directory. Choose
+        one of prefix, "$(.dirs:J=, )". ;
+  }
+}
+
+
+local rule get-install-prefix ( package-name : property-set : staged ? ) {
+  local prefix ;
+  if $(staged) { prefix = [ $(property-set).get <stage-prefix> ] ; }
+  prefix ?= [ $(property-set).get <install-prefix> ] ;
+  if ! $(prefix) {
+    if [ modules.peek : NT ] {
+      prefix = C:\\$(package-name) ;
+    } else {
+      return /usr/local ;
+    }
+  }
+  return $(prefix) ;
+}

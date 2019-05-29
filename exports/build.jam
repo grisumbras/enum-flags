@@ -1,41 +1,54 @@
-import install-path ;
 import make ;
+import path ;
 import print ;
+import property-set ;
+import feature ;
 
-
-prefix = [ install-path.prefix enum-flags ] ;
-execprefix = [ install-path.exec-prefix $(prefix) ] ;
-libdir = [ install-path.libdir $(execprefix) ] ;
-includedir = [ install-path.includedir $(prefix) ] ;
+import b2/install-extra : install ;
 
 
 make enum-flags.pc : : @write-pc ;
-install install-pc : enum-flags.pc : <location>$(libdir)/pkgconfig ;
+local install-pc = [ install (libdir)/pkgconfig : enum-flags.pc ] ;
 
 make enumflags-config.cmake : : @write-cmake-config ;
 make enumflags-config-version.cmake : : @write-cmake-version ;
-install install-cmake
-  : enumflags-config.cmake
-    enumflags-config-version.cmake
-  : <location>$(libdir)/cmake/enumflags-$(VERSION)
-  ;
+local install-cmake
+  = [ install (libdir)/cmake/enumflags-$(VERSION)
+    : enumflags-config.cmake
+      enumflags-config-version.cmake
+    ] ;
 
-alias install : install-pc install-cmake ;
-explicit install install-pc install-cmake ;
+alias install : $(install-pc) $(install-cmake) ;
+explicit install ;
 
 
 rule write-pc  ( target : sources * : properties * ) {
+  local ps = [ property-set.create $(properties) ] ;
+
+  local prefix = [ install-extra.get-dir prefix : $(ps) ] ;
+  prefix = [ install-extra.target-native-path $(prefix) : $(ps) ] ;
+
+  local includedir = [ install-extra.get-dir includedir : $(ps) : relative ] ;
+  includedir = [ path.root $(includedir) "${prefix}" ] ;
+  includedir = [ install-extra.target-native-path $(includedir) : $(ps) ] ;
+
   write $(target)
-    : "Name: enum-flags"
+    : "prefix=$(prefix)"
+      "includedir=$(includedir)"
+      ""
+      "Name: enum-flags"
       "Description: Bit-flags for C++ scoped enums"
       "Version: $(VERSION)"
-      "Cflags: -I$(includedir)"
+      "Cflags: -I${includedir}"
       ""
     ;
 }
 
 
 rule write-cmake-config ( target : sources * : properties * ) {
+  local ps = [ property-set.create $(properties) ] ;
+  local includedir = [ install-extra.get-dir includedir : $(ps) ] ;
+
   write $(target)
     : "if(TARGET EnumFlags::EnumFlags)"
       "  return()"

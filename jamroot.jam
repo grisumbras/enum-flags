@@ -1,8 +1,9 @@
-import package ;
-import path ;
+import modules ;
+import b2/install-extra : install ;
 
 
 project enum-flags ;
+
 
 constant VERSION : 0.1.0 ;
 
@@ -10,15 +11,15 @@ constant VERSION : 0.1.0 ;
 alias libs : usage-requirements <include>include ;
 
 
-package.install headers enum-flags
-  : <install-source-root>include
-  :
-  :
-  : [ path.glob-tree include : *.hpp ]
+local headers
+  = [ install (includedir)
+    : [ glob-tree-ex include : *.hpp ]
+    : <install-source-root>include
+    ] ;
+
+alias install
+  : exports//install
+    $(headers)
+    [ install (docdir) : LICENSE ]
   ;
-explicit headers ;
-
-package.install-data license : enum-flags : LICENSE ;
-
-alias install : headers license exports//install ;
-explicit install headers license ;
+explicit install ;

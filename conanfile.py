@@ -7,7 +7,7 @@ import os
 import re
 
 
-b2 = python_requires("b2-helper/0.2.0@grisumbras/testing")
+b2 = python_requires("b2-helper/0.3.0@grisumbras/testing")
 
 
 def get_version():
@@ -32,13 +32,17 @@ class EnumFlagsConan(b2.B2.Mixin, ConanFile):
     exports_sources = (
         "jamroot.jam",
         "*build.jam",
-        "exports/*.jam",
         "*.hpp",
         "*.cpp",
         "LICENSE*",
+        "b2/*",
     )
     no_copy_source = True
     build_requires = "boost_build/[>=1.68]@bincrafters/stable"
+
+    def b2_setup_builder(self, builder):
+        builder.properties.install_prefix = self.package_folder
+        return builder
 
     def package_info(self):
         self.info.header_only()
