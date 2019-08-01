@@ -7,7 +7,7 @@ import os
 import re
 
 
-b2 = python_requires("b2-helper/0.2.0@grisumbras/testing")
+b2 = python_requires("b2-helper/0.4.0@grisumbras/stable")
 
 
 def get_version():
@@ -19,7 +19,8 @@ def get_version():
         pass
 
 
-class EnumFlagsConan(b2.B2.Mixin, ConanFile):
+@b2.build_with_b2
+class EnumFlagsConan(ConanFile):
     name = "enum-flags"
     version = get_version()
     description = "Bit flags for C++ scoped enums"
