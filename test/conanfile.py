@@ -6,11 +6,11 @@ from conans import (
 import os
 
 
-b2 = python_requires("b2-helper/0.2.0@grisumbras/testing")
+b2 = python_requires("b2-helper/0.4.0@grisumbras/stable")
 
 
 class EnumFlagsTestConan(ConanFile):
-    settings = "os", "compiler", "build_type", "arch", "cppstd",
+    settings = "os", "compiler", "build_type", "arch",
     build_requires = (
         "boost_build/[>=1.68]@bincrafters/stable",
         "boost_core/[>1.60]@bincrafters/stable",
