@@ -1,29 +1,7 @@
-import errors ;
-import os ;
-import string ;
+using pkg-config ;
+import pkg-config ;
 
 project enum-flags-test ;
 
-exe app : main.cpp pkgconfig-enum-flags ;
-
-
-local rule pkgconfig ( package ) {
-  local pkgconfig = [ os.environ PKG_CONFIG ] ;
-  pkgconfig ?= pkg-config ;
-
-  local result
-    = [ SHELL "$(pkgconfig) $(package) --cflags --libs"
-      : exit-status strip-eol
-      ] ;
-  if 0 != $(result[2]) {
-    errors.error Could not find package '$(package)' with pkg-config
-      "($(pkgconfig)):" $(result[1])! ;
-  }
-
-  results = [ string.words $(result[1]) ] ;
-  return <cxxflags>$(results) ;
-}
-
-alias pkgconfig-enum-flags
-  : usage-requirements [ pkgconfig enum-flags ]
-  ;
+pkg-config.import enum-flags ;
+exe app : main.cpp enum-flags ;

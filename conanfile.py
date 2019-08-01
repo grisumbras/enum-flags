@@ -39,7 +39,7 @@ class EnumFlagsConan(ConanFile):
         "LICENSE*",
     )
     no_copy_source = True
-    build_requires = "boost_build/[>=1.68]@bincrafters/stable"
+    build_requires = "boost_build/[>=4.0]@bincrafters/testing"
 
     def package_info(self):
         self.info.header_only()
