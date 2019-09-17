@@ -6,7 +6,7 @@ from conans import (
 import os
 
 
-b2 = python_requires("b2-helper/0.4.0@grisumbras/stable")
+b2 = python_requires("b2-helper/0.5.0@grisumbras/stable")
 
 
 class EnumFlagsTestConan(ConanFile):
