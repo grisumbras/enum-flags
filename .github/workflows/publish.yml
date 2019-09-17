@@ -1,0 +1,38 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull sources
+        uses: actions/checkout@v1
+
+      - name: Configure Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Install CPT
+        run: |
+          python -m pip install --upgrade pip
+          pip install conan_package_tools
+
+      - name: Run CPT
+        run: python build.py
+        env:
+          CONAN_USERNAME: grisumbras
+          CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+          CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+          CONAN_CHANNEL: testing
+          CONAN_STABLE_BRANCH_PATTERN: '\\d+\\.\\d+(\\.\\d+[-\\w\\.]*)?'
+          CONAN_REMOTES: https://api.bintray.com/conan/bincrafters/public-conan
+          CONAN_UPLOAD: https://api.bintray.com/conan/grisumbras/conan
+          CONAN_PRINT_RUN_COMMANDS: 1
