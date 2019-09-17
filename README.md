@@ -1,7 +1,7 @@
 # enum-flags
 
 [![Download](https://api.bintray.com/packages/grisumbras/conan/enum-flags:grisumbras/images/download.svg?version=0.1.0:testing) ](https://bintray.com/grisumbras/conan/enum-flags:grisumbras/0.1.0:testing/link)
-[![Actions Status](https://wdp9fww0r9.execute-api.us-west-2.amazonaws.com/production/badge/grisumbras/enum-flags)](https://wdp9fww0r9.execute-api.us-west-2.amazonaws.com/production/results/grisumbras/enum-flags)
+![Build Status](https://github.com/grisumbras/enum-flags/workflows/build/badge.svg)
 ![License](https://img.shields.io/github/license/grisumbras/enum-flags.svg)
 
 > Bit flags for C++ scoped enums
