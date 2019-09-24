@@ -334,6 +334,41 @@ void test_bitset() {
   BOOST_TEST_EQ((1 | 4 | 8), a_bitset.to_ulong());
 }
 
+void test_erase() {
+  Enums flags(Enum::Two, Enum::Four, Enum::Eight);
+  BOOST_TEST_EQ((2 | 4 | 8), flags.underlying_value());
+
+  // erase unsets flag if set:
+  flags.erase(Enum::Four);
+  BOOST_TEST_EQ((2 | 8), flags.underlying_value());
+  // erase is noop if not set:
+  flags.erase(Enum::Four);
+  BOOST_TEST_EQ((2 | 8), flags.underlying_value());
+
+  // erase unsets flag if set:
+  flags.erase(Enum::Two);
+  flags.erase(Enum::Eight);
+  BOOST_TEST_EQ(0, flags.underlying_value());
+  // erase is noop if not set:
+  flags.erase(Enum::Two);
+  flags.erase(Enum::Eight);
+  BOOST_TEST_EQ(0, flags.underlying_value());
+}
+
+void test_erase_iterator() {
+  Enums flags(Enum::One, Enum::Two, Enum::Four, Enum::Eight);
+  BOOST_TEST_EQ((1 | 2 | 4 | 8), flags.underlying_value());
+
+  // erase single value via iterator:
+  auto it1 = flags.erase(flags.find(Enum::Four));
+  BOOST_TEST_EQ((1 | 2 | 8), flags.underlying_value());
+  BOOST_TEST_EQ(8, static_cast<int>(*it1));
+
+  // erase range via iterator:
+  auto it2 = flags.erase(flags.begin(), std::next(std::next(flags.begin())));
+  BOOST_TEST_EQ(8, flags.underlying_value());
+  BOOST_TEST_EQ(8, static_cast<int>(*it2));
+}
 
 int main() {
   test_set_underlying_value();
@@ -348,5 +383,7 @@ int main() {
   test_bit_or();
   test_bit_xor();
   test_bitset();
+  test_erase();
+  test_erase_iterator();
   return boost::report_errors();
 }
