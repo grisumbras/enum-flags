@@ -24,12 +24,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install conan_package_tools
+          pip install urllib3==1.25.3
 
       - name: Run CPT
         run: python build.py
         env:
           CONAN_USERNAME: grisumbras
-          CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+          CONAN_LOGIN_USERNAME: grisumbras
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
           CONAN_CHANNEL: testing
           CONAN_STABLE_BRANCH_PATTERN: '\\d+\\.\\d+(\\.\\d+[-\\w\\.]*)?'
