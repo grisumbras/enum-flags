@@ -3,7 +3,7 @@ name: publish
 on:
   push:
     branches:
-      - master
+      - '*'
     tags:
       - '*'
 
@@ -31,8 +31,7 @@ jobs:
         env:
           CONAN_USERNAME: grisumbras
           CONAN_LOGIN_USERNAME: grisumbras
-          CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
-          CONAN_CHANNEL: testing
+          CONAN_PASSWORD: 1
           CONAN_STABLE_BRANCH_PATTERN: '\\d+\\.\\d+(\\.\\d+[-\\w\\.]*)?'
           CONAN_REMOTES: https://api.bintray.com/conan/bincrafters/public-conan
           CONAN_UPLOAD: https://api.bintray.com/conan/grisumbras/conan
